@@ -1,0 +1,20 @@
+node_modules/
+.next/
+out/
+dist/
+.turbo/
+.vercel/
+*.tsbuildinfo
+next-env.d.ts
+
+# Hemmeligheter – repoet er offentlig!
+.env
+.env.*
+!.env.example
+
+# Supabase lokalt
+supabase/.temp/
+supabase/.branches/
+
+.DS_Store
+*.log

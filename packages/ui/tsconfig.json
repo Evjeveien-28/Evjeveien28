@@ -1,0 +1,4 @@
+{
+  "extends": "@hjem/config/tsconfig.base.json",
+  "include": ["src"]
+}

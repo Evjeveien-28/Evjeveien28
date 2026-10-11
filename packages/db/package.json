@@ -1,0 +1,24 @@
+{
+  "name": "@hjem/db",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    "./browser": "./src/browser.ts",
+    "./server": "./src/server.ts",
+    "./types": "./src/types.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "gen:types": "supabase gen types typescript --linked --schema public,middag > src/types.ts"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.117.3"
+  },
+  "peerDependencies": { "next": ">=15" },
+  "devDependencies": {
+    "@hjem/config": "workspace:*",
+    "next": "^16",
+    "typescript": "^5"
+  }
+}
