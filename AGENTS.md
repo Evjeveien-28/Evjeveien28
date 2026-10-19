@@ -1,13 +1,13 @@
 # Tidsklemma
 
-Tidsklemma er serien med hjemme-appene i Evjeveien 28.
+Tidsklemma er hjemme-appen i Evjeveien 28: én Next.js-app (`apps/tidsklemma`) med flere deler.
 
-Les `README.md` for struktur, oppskrift på ny app og reglene. Det viktigste:
+Les `README.md` for struktur, oppskrift på ny del og reglene. Det viktigste:
 
 - Repoet er offentlig: aldri commit `.env`-filer, nøkler eller passord.
 - Bare `anon`/`publishable`-nøkkelen i appene, aldri `service_role`.
 - Alle tabeller skal ha RLS med `public.is_household_member(household_id)`.
-- Hver app har sitt eget schema i Supabase.
+- Hver del har sin egen mappe under `apps/tidsklemma/app/` og sitt eget schema i Supabase.
 
 <!-- BEGIN:turborepo-agent-rules -->
 
