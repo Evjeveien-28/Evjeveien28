@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Ikon } from "../../ikoner";
 import { leggTil } from "../actions";
 import type { Forslag } from "../gjenkjenn/route";
 import { grupper, intervaller, sok, type Gruppe, type KatalogPlante } from "../katalog";
-import { gjenkjenn } from "./gjenkjenn";
+import { gjenkjenn, hentNyttBilde, krymp } from "./gjenkjenn";
 
 const valgbareGrupper: Gruppe[] = ["torke", "middels", "fuktig"];
 
@@ -30,13 +30,22 @@ export function NyPlante() {
   const [sist, setSist] = useState("idag");
   const treff = sok(tekst).slice(0, 8);
 
+  // Bilde tatt med «+» på plantelisten.
+  useEffect(() => {
+    hentNyttBilde().then((b) => b && finnPlante(b));
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- bare ved første visning
+  }, []);
+
   async function velgBilde(fil: File | undefined) {
-    if (!fil) return;
-    setBilde(URL.createObjectURL(fil));
+    if (fil) finnPlante(await krymp(fil));
+  }
+
+  async function finnPlante(blob: Blob) {
+    setBilde(URL.createObjectURL(blob));
     setForslag(null);
     setBildefeil(null);
     setLeter(true);
-    const svar = await gjenkjenn(fil);
+    const svar = await gjenkjenn(blob);
     setLeter(false);
     if ("feil" in svar) setBildefeil(feiltekster[svar.feil] ?? "Det gikk ikke å gjenkjenne planten. Prøv igjen, eller søk på navn.");
     else setForslag(svar.forslag);
@@ -51,19 +60,22 @@ export function NyPlante() {
   }
 
   if (!valgt) {
+    const kameraKnapp = (
+      <label className={bilde ? "sekundar ta-bilde ta-nytt" : "primar ta-bilde"}>
+        <Ikon navn="kamera" storrelse={bilde ? 18 : 22} />
+        {bilde ? "Ta nytt bilde" : "Ta bilde av planten"}
+        <input
+          type="file"
+          accept="image/*"
+          capture="environment"
+          className="visuelt-skjult"
+          onChange={(e) => velgBilde(e.target.files?.[0])}
+        />
+      </label>
+    );
     return (
       <>
-        <label className="primar ta-bilde">
-          <Ikon navn="kamera" storrelse={22} />
-          {bilde ? "Ta nytt bilde" : "Ta bilde av planten"}
-          <input
-            type="file"
-            accept="image/*"
-            capture="environment"
-            className="visuelt-skjult"
-            onChange={(e) => velgBilde(e.target.files?.[0])}
-          />
-        </label>
+        {!bilde && kameraKnapp}
 
         {bilde && (
           <div className="foto">
@@ -109,7 +121,7 @@ export function NyPlante() {
         )}
 
         <label htmlFor="sok" className="kt" style={{ marginTop: 18 }}>
-          Eller søk på navn
+          {forslag ? "Ikke blant forslagene? Skriv inn navnet" : bilde ? "Eller skriv inn navnet" : "Eller søk på navn"}
         </label>
         <input
           id="sok"
@@ -138,6 +150,7 @@ export function NyPlante() {
         <button type="button" className="lenke" onClick={() => setValgt("annen")}>
           Finner du den ikke? Legg til annen plante
         </button>
+        {bilde && <div style={{ marginTop: 8 }}>{kameraKnapp}</div>}
       </>
     );
   }

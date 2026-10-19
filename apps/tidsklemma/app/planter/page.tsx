@@ -3,6 +3,7 @@ import { createClient } from "@hjem/db/server";
 import { Ikon } from "../ikoner";
 import { vann } from "./actions";
 import { Angre } from "./angre";
+import { NyPlanteKnapp } from "./ny-knapp";
 import { hentHusstand, hentNavn, hentPlanter, type PlanteStatus } from "./data";
 import { Plantebilde } from "./plantebilde";
 import { kortDato, sidenTekst } from "./tid";
@@ -78,9 +79,7 @@ export default async function Planter({
       {tilbake}
       <div className="tittelrad">
         <h2>Planter</h2>
-        <Link href="/planter/ny" className="pluss" aria-label="Legg til plante">
-          +
-        </Link>
+        <NyPlanteKnapp />
       </div>
       <div className="strek venstre" />
 
@@ -90,7 +89,7 @@ export default async function Planter({
       {planter.length === 0 ? (
         <div className="kort stiplet">
           <p className="kt">Ingen planter ennå</p>
-          <p>Legg til den første med «+».</p>
+          <p>Trykk «+» og ta bilde av den første planten.</p>
         </div>
       ) : (
         <>
@@ -131,6 +130,8 @@ export default async function Planter({
       )}
 
       <nav className="bunnmeny" aria-label="Planter">
+        <Link href="/planter/ny">Legg til uten bilde</Link>
+        <span aria-hidden="true">·</span>
         <Link href="/planter/innstillinger">Innstillinger</Link>
       </nav>
 

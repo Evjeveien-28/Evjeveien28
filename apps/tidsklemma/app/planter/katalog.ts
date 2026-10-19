@@ -108,11 +108,12 @@ export function intervaller(plante: KatalogPlante) {
   return { sommer: plante.sommer ?? g.sommer, vinter: plante.vinter ?? g.vinter, tips: plante.tips ?? g.tips };
 }
 
-/** Søk i navn, andre navn og latinsk navn. Treff i starten av ordet kommer først. */
+/** Søk i navn, andre navn og latinsk navn. Treff i starten av det norske navnet kommer først. */
 export function sok(tekst: string) {
   const q = tekst.trim().toLowerCase();
   if (!q) return [];
   const poeng = (p: KatalogPlante) => {
+    if (p.navn.toLowerCase().startsWith(q)) return 3;
     const navn = [p.navn, ...(p.ogsa ?? []), p.latin].map((n) => n.toLowerCase());
     if (navn.some((n) => n.startsWith(q))) return 2;
     if (navn.some((n) => n.split(/[\s-]+/).some((ord) => ord.startsWith(q)))) return 1;
