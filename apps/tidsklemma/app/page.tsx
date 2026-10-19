@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@hjem/db/server";
+import { hentPlanter } from "./planter/data";
 import { deler } from "../deler";
 import { loggUt } from "./actions";
 import { Ikon } from "./ikoner";
@@ -18,8 +19,21 @@ function hilsen() {
 
 export default async function Hjem() {
   const supabase = await createClient();
-  const { data: husstander } = await supabase.from("households").select("name");
+  const { data: husstander } = await supabase.from("households").select("id, name");
   const husstand = husstander?.[0];
+
+  // Levende tekst og rød prikk på flisene som har noe å melde.
+  const status: Record<string, { tekst: string; antall: number }> = {};
+  if (husstand) {
+    const planter = await hentPlanter(supabase, husstand.id).catch(() => null);
+    if (planter) {
+      const antall = planter.filter((p) => p.trengerVann).length;
+      status.planter = {
+        antall,
+        tekst: planter.length === 0 ? "Legg til planter" : antall > 0 ? `${antall} trenger vann` : "Alt er vannet",
+      };
+    }
+  }
 
   return (
     <>
@@ -44,8 +58,13 @@ export default async function Hjem() {
               <span className="ikon">
                 <Ikon navn={del.ikon} storrelse={30} />
               </span>
+              {status[del.slug]?.antall ? (
+                <span className="merke-rod" aria-label={`${status[del.slug]!.antall} trenger oppmerksomhet`}>
+                  {status[del.slug]!.antall}
+                </span>
+              ) : null}
               <b>{del.navn}</b>
-              <small>{del.beskrivelse}</small>
+              <small>{status[del.slug]?.tekst ?? del.beskrivelse}</small>
             </Link>
           ))}
         </div>
