@@ -1,16 +1,10 @@
 import type { ReactNode } from "react";
 
-export function Card({ title, children }: { title: string; children?: ReactNode }) {
+/** Kort med liten overskrift. Utseendet kommer fra `.kort` og `.kt` i appens CSS. */
+export function Card({ title, stiplet, children }: { title: string; stiplet?: boolean; children?: ReactNode }) {
   return (
-    <section
-      style={{
-        border: "1px solid #ddd",
-        borderRadius: 12,
-        padding: 16,
-        marginBottom: 12,
-      }}
-    >
-      <h2 style={{ margin: "0 0 8px", fontSize: 18 }}>{title}</h2>
+    <section className={stiplet ? "kort stiplet" : "kort"}>
+      <p className="kt">{title}</p>
       {children}
     </section>
   );

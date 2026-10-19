@@ -46,28 +46,28 @@ export function Passkeys() {
     hent();
   }
 
-  if (!passkeys) return <p>Henter …</p>;
+  if (!passkeys) return <p className="dempet">Henter …</p>;
 
   return (
     <>
-      {passkeys.length === 0 && <p style={{ color: "#555" }}>Du har ingen passkeys ennå.</p>}
+      {passkeys.length === 0 && !feil && <p className="dempet">Du har ingen passkeys ennå.</p>}
       {passkeys.map((p) => (
         <Card key={p.id} title={p.friendly_name || "Passkey"}>
-          <p style={{ marginTop: 0, color: "#555" }}>
+          <p className="dempet">
             Lagt til {dato(p.created_at)}
             {p.last_used_at && <> · sist brukt {dato(p.last_used_at)}</>}
           </p>
-          <button type="button" onClick={() => slett(p.id)} style={{ padding: 12, fontSize: 16 }}>
+          <button type="button" className="sekundar" onClick={() => slett(p.id)}>
             Slett
           </button>
         </Card>
       ))}
       {stottet && (
-        <button type="button" onClick={leggTil} style={{ padding: 12, fontSize: 16 }}>
+        <button type="button" className="primar" onClick={leggTil}>
           Legg til passkey på denne enheten
         </button>
       )}
-      {feil && <p style={{ color: "#b91c1c" }}>{feil}</p>}
+      {feil && <p className="feil">{feil}</p>}
     </>
   );
 }
