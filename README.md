@@ -41,7 +41,7 @@ Endringer i databasen gjøres i nettleseren: lim inn hver fil i `supabase/migrat
 4. **Authentication → Hooks → Before User Created**: velg Postgres-funksjonen `public.hook_bare_inviterte`. Den stopper alle som ikke er invitert.
 5. **Authentication → Sign In / Providers**: slå på **Allow new users to sign up**. Gjør dette *etter* steg 4, ellers kan hvem som helst lage konto i mellomtiden.
 
-6. **Project Settings → Data API → Exposed schemas**: legg til schemaene til delene (`planter`).
+6. **Integrations → Data API → Settings**: legg til schemaene til delene (`planter`) under **Exposed schemas**, og slå på de nye tabellene (`planter.planter`, `planter.vanninger`, `planter.innstillinger`) under **Exposed tables**. Nye tabeller er ikke eksponert som standard. RLS bestemmer fortsatt hvem som ser hva.
 
 **Pl@ntNet** (bildegjenkjenning av planter): lag en gratis konto på my.plantnet.org og legg API-nøkkelen inn i Vercel som `PLANTNET_API_KEY` (Production og Preview). Den brukes bare på serveren og skal ikke ha `NEXT_PUBLIC_` foran.
 
@@ -64,7 +64,7 @@ where u.email in ('...');
 1. Lag `apps/tidsklemma/app/<del>/page.tsx`. Alle sider krever innlogging automatisk.
 2. Legg delen til i `apps/tidsklemma/deler.ts`, så vises den på startsiden.
 3. Lag en ny migrasjon i `supabase/migrations/` med delens eget schema, `grant usage on schema <del> to authenticated`, og RLS på alle tabeller.
-4. Kjør migrasjonen i SQL Editor, legg schemaet til under **Project Settings → Data API → Exposed schemas**, og legg det til i `gen:types` i `packages/db/package.json`.
+4. Kjør migrasjonen i SQL Editor, legg schemaet til under **Exposed schemas** og tabellene under **Exposed tables** (Integrations → Data API → Settings), og legg det til i `gen:types` i `packages/db/package.json`.
 
 I koden når du delens tabeller med `supabase.schema("<del>").from("...")`.
 
