@@ -4,8 +4,8 @@ import { Passkeys } from "./passkeys";
 export default function Innlogging() {
   return (
     <>
-      <Link href="/" className="tilbake">
-        ← Tilbake
+      <Link href="/meg" className="tilbake">
+        ← Meg
       </Link>
       <h2>Innlogging</h2>
       <div className="strek venstre" />

@@ -72,6 +72,10 @@ I koden når du delens tabeller med `supabase.schema("<del>").from("...")`.
 
 - **Planter** (`app/planter`, schema `planter`): husstandens planter og vanning. Plantelisten med norske navn og vanningsintervall ligger i `app/planter/katalog.ts`. «Ta bilde» sender bildet via `app/planter/gjenkjenn/route.ts` til Pl@ntNet, og treffet kobles til listen via art, slekt eller familie. Vinterintervallet brukes oktober–mars. Startsiden viser en rød prikk når noe trenger vann.
 
+## Brukere
+
+Fornavn lagres på brukeren i Supabase (`user_metadata.fornavn`) fra «Meg» (ikonet øverst til høyre). `public.husstandens_medlemmer()` gir husstanden hverandres fornavn.
+
 ## Regler
 
 - Repoet er **offentlig**. Aldri commit `.env`-filer, nøkler eller passord.
