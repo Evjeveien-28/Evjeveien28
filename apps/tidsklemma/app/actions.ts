@@ -12,8 +12,8 @@ export async function loggInn(formData: FormData) {
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithOtp({
     email,
-    // Bare brukere som er lagt inn i Supabase kan logge inn.
-    options: { shouldCreateUser: false, emailRedirectTo: `${origin}/auth/bekreft` },
+    // Nye brukere opprettes bare hvis e-posten er invitert (sjekkes av hook_bare_inviterte i Supabase).
+    options: { shouldCreateUser: true, emailRedirectTo: `${origin}/auth/bekreft` },
   });
   redirect(error ? "/logg-inn?feil=1" : "/logg-inn?sendt=1");
 }

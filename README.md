@@ -33,19 +33,25 @@ Appen kjører på http://localhost:3000.
 
 **Supabase** (ett prosjekt, `hzyjshudlfciedqufuva`):
 
-1. `npx supabase link --project-ref hzyjshudlfciedqufuva` og `npx supabase db push`.
-2. **Authentication → URL Configuration**: Site URL = `https://tidsklemma.vercel.app`. Redirect URLs: `https://tidsklemma.vercel.app/**` og `http://localhost:3000/**`. Skal innlogging virke i forhåndsvisninger, legg til `https://*-<vercel-team>.vercel.app/**` med ditt eget team-navn – aldri et bredere mønster som `https://tidsklemma-*.vercel.app/**`, som også slipper gjennom andres prosjekter.
+Endringer i databasen gjøres i nettleseren: lim inn hver fil i `supabase/migrations/` i **SQL Editor** og trykk **Run**, i rekkefølge, én gang per fil.
+
+1. Kjør migrasjonene.
+2. **Authentication → URL Configuration**: Site URL = `https://tidsklemma.vercel.app`. Redirect URLs: `https://tidsklemma.vercel.app/**`, `http://localhost:3000/**` og `https://*-evjeveien28.vercel.app/**` (forhåndsvisninger). Bruk aldri et bredere mønster som `https://tidsklemma-*.vercel.app/**`, som også slipper gjennom andres prosjekter.
 3. **Authentication → Passkeys**: slå på passkeys. Relying Party ID = `tidsklemma.vercel.app`, navn = `Tidsklemma`, origin = `https://tidsklemma.vercel.app`. Passkeys virker bare på produksjonsadressen; lokalt og i forhåndsvisninger brukes e-postlenken.
-4. Legg inn brukerne under **Authentication → Users → Add user**. Appen lar bare eksisterende brukere logge inn.
-5. Legg inn husstanden i **SQL Editor**:
-   ```sql
-   with h as (
-     insert into public.households (name) values ('Evjeveien 28') returning id
-   )
-   insert into public.household_members (household_id, user_id)
-   select h.id, u.id from h, auth.users u
-   where u.email in ('...', '...');
-   ```
+4. **Authentication → Hooks → Before User Created**: velg Postgres-funksjonen `public.hook_bare_inviterte`. Den stopper alle som ikke er invitert.
+5. **Authentication → Sign In / Providers**: slå på **Allow new users to sign up**. Gjør dette *etter* steg 4, ellers kan hvem som helst lage konto i mellomtiden.
+
+Nye medlemmer inviteres fra **Husstand** i appen. Den inviterte logger inn med e-posten sin på https://tidsklemma.vercel.app og blir meldt inn automatisk.
+
+Den aller første husstanden og brukeren ble laget manuelt (**Authentication → Users → Add user**, deretter i SQL Editor):
+```sql
+with h as (
+  insert into public.households (name) values ('Evjeveien 28') returning id
+)
+insert into public.household_members (household_id, user_id)
+select h.id, u.id from h, auth.users u
+where u.email in ('...');
+```
 
 **Vercel** (ett prosjekt, https://tidsklemma.vercel.app): Root Directory `apps/tidsklemma`, og miljøvariablene `NEXT_PUBLIC_SUPABASE_URL` og `NEXT_PUBLIC_SUPABASE_ANON_KEY` for Production og Preview.
 
@@ -54,7 +60,7 @@ Appen kjører på http://localhost:3000.
 1. Lag `apps/tidsklemma/app/<del>/page.tsx`. Alle sider krever innlogging automatisk.
 2. Legg delen til i `apps/tidsklemma/deler.ts`, så vises den på startsiden.
 3. Lag en ny migrasjon i `supabase/migrations/` med delens eget schema, `grant usage on schema <del> to authenticated`, og RLS på alle tabeller.
-4. Kjør `npx supabase db push`, legg schemaet til under **Project Settings → Data API → Exposed schemas**, og legg det til i `gen:types` i `packages/db/package.json`.
+4. Kjør migrasjonen i SQL Editor, legg schemaet til under **Project Settings → Data API → Exposed schemas**, og legg det til i `gen:types` i `packages/db/package.json`.
 
 I koden når du delens tabeller med `supabase.schema("<del>").from("...")`.
 
