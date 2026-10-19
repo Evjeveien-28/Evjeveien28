@@ -76,33 +76,37 @@ export function Intervallkort({
       <p className="liten">{forklaring}</p>
 
       <div className="auto-rad">
-        <span>
-          Automatisk justering:{" "}
-          <b>{!fellesAuto ? "av for hele husstanden" : plante.auto_justering ? "på" : "av"}</b>
-        </span>
         {fellesAuto ? (
-          <form action={settAuto}>
+          <form action={settAuto} className="bryter-skjema">
             <input type="hidden" name="plante" value={plante.id} />
             <input type="hidden" name="pa" value={plante.auto_justering ? "0" : "1"} />
-            <button type="submit" className="sekundar liten-knapp">
-              {plante.auto_justering ? "Slå av" : "Slå på"}
+            <button type="submit" role="switch" aria-checked={plante.auto_justering} className="bryter">
+              <span className="bryter-tekst">Automatisk justering</span>
+              <span className="bryter-spor" aria-hidden="true">
+                <span className="bryter-knott" />
+              </span>
             </button>
           </form>
         ) : (
-          <Link href="/planter/innstillinger" className="mini-lenke">
-            Innstillinger
-          </Link>
+          <>
+            <span>
+              Automatisk justering: <b>av for hele husstanden</b>
+            </span>
+            <Link href="/planter/innstillinger" className="mini-lenke">
+              Innstillinger
+            </Link>
+          </>
         )}
       </div>
 
-      <div className="knapperad" style={{ marginTop: 10 }}>
-        <Link href={`/planter/${plante.id}/endre`} className="sekundar liten-knapp">
+      <div className="inline-rad">
+        <Link href={`/planter/${plante.id}/endre`} className="inline-knapp">
           Sett selv
         </Link>
         {(harManuelt || plante.auto_justering) && (
           <form action={tilbakestill}>
             <input type="hidden" name="plante" value={plante.id} />
-            <button type="submit" className="sekundar liten-knapp">
+            <button type="submit" className="inline-knapp">
               Tilbake til standard
             </button>
           </form>
