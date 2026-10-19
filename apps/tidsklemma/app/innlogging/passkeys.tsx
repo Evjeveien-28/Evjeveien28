@@ -17,6 +17,8 @@ export function Passkeys() {
   const hent = useCallback(async () => {
     const { data, error } = await createClient().auth.passkey.list();
     if (error) setFeil("Klarte ikke å hente passkeys.");
+    // Ingen passkeys igjen: da skal ikke innloggingssiden lenger foreslå Face ID først.
+    if (data && data.length === 0) lagreValg(null);
     setPasskeys(data ?? []);
   }, []);
 

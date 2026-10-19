@@ -1,5 +1,4 @@
-import { loggInn } from "../actions";
-import { PasskeyKnapp } from "./passkey-knapp";
+import { Innlogging } from "./innlogging";
 
 export default async function LoggInn({
   searchParams,
@@ -14,17 +13,7 @@ export default async function LoggInn({
       {sendt ? (
         <p>Sjekk e-posten din. Trykk på lenken for å logge inn.</p>
       ) : (
-        <>
-          <PasskeyKnapp />
-          <form action={loggInn} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          <label htmlFor="email">E-post</label>
-          <input id="email" name="email" type="email" required autoComplete="email" style={{ padding: 12, fontSize: 16 }} />
-          <button type="submit" style={{ padding: 12, fontSize: 16 }}>
-            Send innloggingslenke
-          </button>
-          {feil && <p style={{ color: "#b91c1c" }}>Det gikk ikke. Sjekk adressen og prøv igjen.</p>}
-          </form>
-        </>
+        <Innlogging epostFeil={Boolean(feil)} />
       )}
     </main>
   );

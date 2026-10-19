@@ -24,9 +24,10 @@ export function hentValg(): "ja" | "nei" | null {
   }
 }
 
-export function lagreValg(verdi: "ja" | "nei") {
+export function lagreValg(verdi: "ja" | "nei" | null) {
   try {
-    localStorage.setItem(NOKKEL, verdi);
+    if (verdi) localStorage.setItem(NOKKEL, verdi);
+    else localStorage.removeItem(NOKKEL);
   } catch {
     // Privat nettleservindu e.l. – da spør vi bare igjen neste gang.
   }
