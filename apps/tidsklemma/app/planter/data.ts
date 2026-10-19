@@ -103,7 +103,7 @@ export async function hentPlanter(supabase: Supabase, husstandId: string): Promi
     .sort((a, b) => a.dagerIgjen - b.dagerIgjen || a.navn.localeCompare(b.navn, "nb"));
 }
 
-/** Navn å vise for den som vannet: «deg», eller fornavnet fra e-posten. */
+/** Navn å vise for den som vannet: «deg», fornavnet, eller fornavnet gjettet fra e-posten. */
 export async function hentNavn(supabase: Supabase, husstandId: string) {
   const [{ data: medlemmer }, { data: meg }] = await Promise.all([
     supabase.rpc("husstandens_medlemmer", { hid: husstandId }),
@@ -111,9 +111,10 @@ export async function hentNavn(supabase: Supabase, husstandId: string) {
   ]);
   const minId = meg?.claims.sub;
   const navn = new Map<string, string>();
-  for (const m of (medlemmer as { user_id: string; email: string }[] | null) ?? []) {
-    const forste = m.email.split("@")[0]!.split(/[._-]/)[0]!;
-    navn.set(m.user_id, m.user_id === minId ? "deg" : forste.charAt(0).toUpperCase() + forste.slice(1));
+  for (const m of (medlemmer as { user_id: string; email: string; fornavn?: string | null }[] | null) ?? []) {
+    const fraEpost = m.email.split("@")[0]!.split(/[._-]/)[0]!;
+    const fornavn = m.fornavn || fraEpost.charAt(0).toUpperCase() + fraEpost.slice(1);
+    navn.set(m.user_id, m.user_id === minId ? "deg" : fornavn);
   }
   return (id: string | null) => (id ? (navn.get(id) ?? "en annen") : null);
 }

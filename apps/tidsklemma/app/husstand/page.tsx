@@ -15,8 +15,8 @@ export default async function Husstand({
   const husstand = husstander?.[0];
 
   const tilbake = (
-    <Link href="/" className="tilbake">
-      ← Tilbake
+    <Link href="/meg" className="tilbake">
+      ← Meg
     </Link>
   );
 
@@ -58,10 +58,16 @@ export default async function Husstand({
 
       <Card title="Medlemmer">
         <ul className="liste">
-          {(medlemmer as { user_id: string; email: string }[] | null)?.map((m) => (
+          {(medlemmer as { user_id: string; email: string; fornavn?: string | null }[] | null)?.map((m) => (
             <li key={m.user_id}>
               <span>
-                {m.email}
+                {m.fornavn ? (
+                  <>
+                    <b>{m.fornavn}</b> <span className="dempet liten">{m.email}</span>
+                  </>
+                ) : (
+                  m.email
+                )}
                 {m.user_id === minId && <em className="dempet"> (deg)</em>}
               </span>
             </li>

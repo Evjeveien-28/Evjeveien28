@@ -29,6 +29,7 @@ button, input { font: inherit; color: inherit; }
 
 /* Rammen rundt hele appen */
 .ramme {
+  position: relative;
   max-width: 480px;
   min-height: calc(100dvh - 28px);
   margin: 0 auto;
@@ -259,3 +260,11 @@ fieldset.kort legend { padding: 0 4px; }
 /* Inline-knapper i kort */
 .inline-rad { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 4px; }
 .inline-knapp { background: none; border: 0; padding: 0; min-height: 44px; display: inline-flex; align-items: center; color: var(--brun); font-weight: 700; font-size: 15px; cursor: pointer; text-decoration: underline; text-decoration-color: var(--lyseblaa); text-decoration-thickness: 3px; text-underline-offset: 4px; }
+
+/* Brukerikon øverst til høyre */
+.brukerknapp { position: absolute; top: 16px; right: 16px; width: 44px; height: 44px; border-radius: 50%; background: var(--lyseblaa); color: var(--valnott); display: grid; place-items: center; font-weight: 700; font-size: 18px; text-decoration: none; box-shadow: 0 3px 0 #6f8fa8; z-index: 1; }
+.brukerknapp:active { transform: translateY(3px); box-shadow: none; }
+.topp { padding-right: 52px; }
+.tilbake + h2, .tilbake ~ .tittelrad { margin-top: 18px; }
+.meg-meny { display: flex; flex-direction: column; margin: 8px 0; }
+.meg-lenke { display: flex; justify-content: space-between; align-items: center; min-height: 52px; border-bottom: 1px solid #e6d9c2; text-decoration: none; font-size: 18px; }

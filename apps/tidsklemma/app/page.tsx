@@ -2,8 +2,9 @@ import Link from "next/link";
 import { createClient } from "@hjem/db/server";
 import { hentPlanter } from "./planter/data";
 import { deler } from "../deler";
-import { loggUt } from "./actions";
 import { Ikon } from "./ikoner";
+import { lagreFornavn } from "./meg/actions";
+import { hentBruker } from "./meg/bruker";
 import { PasskeyForslag } from "./passkey-forslag";
 import { Topp } from "./skilt";
 
@@ -19,7 +20,7 @@ function hilsen() {
 
 export default async function Hjem() {
   const supabase = await createClient();
-  const { data: husstander } = await supabase.from("households").select("id, name");
+  const [{ data: husstander }, bruker] = await Promise.all([supabase.from("households").select("id, name"), hentBruker()]);
   const husstand = husstander?.[0];
 
   // Levende tekst og rød prikk på flisene som har noe å melde.
@@ -40,9 +41,27 @@ export default async function Hjem() {
       <Topp />
       <p className="hilsen">
         {hilsen()}
-        {husstand && <span className="dempet"> · {husstand.name}</span>}
+        {bruker?.fornavn ? `, ${bruker.fornavn}` : husstand && <span className="dempet"> · {husstand.name}</span>}
       </p>
       {!husstand && <p>Du er ikke medlem av en husstand ennå.</p>}
+
+      {bruker && !bruker.fornavn && (
+        <form action={lagreFornavn} className="kort">
+          <input type="hidden" name="tilbake" value="/" />
+          <label htmlFor="fornavn" className="kt">
+            Hva heter du?
+          </label>
+          <p className="dempet liten" style={{ marginTop: 0 }}>
+            Fornavnet vises for de andre i husstanden.
+          </p>
+          <div className="knapperad">
+            <input id="fornavn" name="fornavn" required maxLength={40} autoComplete="given-name" className="felt" style={{ margin: 0, flex: 1 }} />
+            <button type="submit" className="sekundar">
+              Lagre
+            </button>
+          </div>
+        </form>
+      )}
 
       <PasskeyForslag />
 
@@ -70,15 +89,6 @@ export default async function Hjem() {
         </div>
       )}
 
-      <nav className="bunnmeny" aria-label="Meny">
-        <Link href="/husstand">Husstand</Link>
-        <span aria-hidden="true">·</span>
-        <Link href="/innlogging">Innlogging</Link>
-        <span aria-hidden="true">·</span>
-        <form action={loggUt}>
-          <button type="submit">Logg ut</button>
-        </form>
-      </nav>
     </>
   );
 }
