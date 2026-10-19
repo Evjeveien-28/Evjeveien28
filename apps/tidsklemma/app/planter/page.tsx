@@ -3,6 +3,7 @@ import { createClient } from "@hjem/db/server";
 import { Ikon } from "../ikoner";
 import { vann } from "./actions";
 import { Angre } from "./angre";
+import { DatabaseFeil } from "./database-feil";
 import { NyPlanteKnapp } from "./ny-knapp";
 import { hentHusstand, hentNavn, hentPlanter, type PlanteStatus } from "./data";
 import { Plantebilde } from "./plantebilde";
@@ -40,7 +41,20 @@ export default async function Planter({
     );
   }
 
-  const [planter, navn] = await Promise.all([hentPlanter(supabase, husstand.id), hentNavn(supabase, husstand.id)]);
+  let planter: PlanteStatus[];
+  let navn: Awaited<ReturnType<typeof hentNavn>>;
+  try {
+    [planter, navn] = await Promise.all([hentPlanter(supabase, husstand.id), hentNavn(supabase, husstand.id)]);
+  } catch (e) {
+    return (
+      <>
+        {tilbake}
+        <h2>Planter</h2>
+        <div className="strek venstre" />
+        <DatabaseFeil melding={e instanceof Error ? e.message : String(e)} />
+      </>
+    );
+  }
   const trenger = planter.filter((p) => p.trengerVann);
   const senere = planter.filter((p) => !p.trengerVann);
   const angreIder = ([] as string[]).concat(sok.angre ?? []);
