@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@hjem/db/server";
 import { Ikon } from "../../ikoner";
 import { fjernVanning, settAuto, tellesIkke, tilbakestill, vann } from "../actions";
+import { Side } from "../../side";
 import { Angre } from "../angre";
 import { beregnStatus, hentAutoJustering, hentHusstand, hentNavn, PLANTEFELT, type PlanteRad, type Vanning } from "../data";
 import { finnIKatalog, intervaller } from "../katalog";
@@ -50,16 +51,10 @@ export default async function Plante({
   }
 
   return (
-    <>
-      <Link href="/planter" className="tilbake">
-        ← Planter
-      </Link>
+    <Side tittel={p.navn} tilbake={{ href: "/planter", navn: "Planter" }}>
       <div className="detaljtopp">
-        <Plantebilde katalogId={p.katalog_id} storrelse={72} />
-        <div>
-          <h2 className="h2m">{p.navn}</h2>
-          <small className="dempet">{[art?.latin ?? p.latinsk_navn, p.plassering].filter(Boolean).join(" · ")}</small>
-        </div>
+        <Plantebilde katalogId={p.katalog_id} storrelse={48} />
+        <small className="dempet">{[art?.latin ?? p.latinsk_navn, p.plassering].filter(Boolean).join(" · ") || " "}</small>
       </div>
 
       <div className="kort">
@@ -154,6 +149,6 @@ export default async function Plante({
       </div>
 
       {angreIder.length > 0 && <Angre vanninger={angreIder} dato={sok.dato} tilbake={sti} />}
-    </>
+    </Side>
   );
 }

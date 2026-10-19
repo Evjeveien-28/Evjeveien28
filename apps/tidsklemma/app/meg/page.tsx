@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Side } from "../side";
 import { Card } from "@hjem/ui";
 import { loggUt } from "../actions";
 import { hentBruker } from "./bruker";
@@ -8,13 +9,7 @@ export default async function Meg({ searchParams }: { searchParams: Promise<{ la
   const [{ lagret, feil }, bruker] = await Promise.all([searchParams, hentBruker()]);
 
   return (
-    <>
-      <Link href="/" className="tilbake">
-        ← Tilbake
-      </Link>
-      <h2>{bruker?.fornavn ?? "Meg"}</h2>
-      <div className="strek venstre" />
-
+    <Side tittel={bruker?.fornavn ?? "Meg"} tilbake={{ href: "/", navn: "Tilbake" }}>
       <form action={lagreFornavn} style={{ marginBottom: 20 }}>
         <label htmlFor="fornavn" className="kt">
           Fornavn
@@ -53,6 +48,6 @@ export default async function Meg({ searchParams }: { searchParams: Promise<{ la
           Logg ut
         </button>
       </form>
-    </>
+    </Side>
   );
 }

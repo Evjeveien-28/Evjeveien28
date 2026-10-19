@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Side } from "../../../side";
 import { notFound } from "next/navigation";
 import { createClient } from "@hjem/db/server";
 import { endre, slett } from "../../actions";
@@ -25,13 +25,7 @@ export default async function EndrePlante({
   const autoPa = p.auto_justering && (await hentAutoJustering(supabase, husstand.id));
 
   return (
-    <>
-      <Link href={`/planter/${p.id}`} className="tilbake">
-        ← Tilbake
-      </Link>
-      <h2>Endre</h2>
-      <div className="strek venstre" />
-
+    <Side tittel="Endre" tilbake={{ href: `/planter/${p.id}`, navn: p.navn }}>
       <form action={endre}>
         <input type="hidden" name="plante" value={p.id} />
         <label htmlFor="navn" className="kt">
@@ -102,6 +96,6 @@ export default async function EndrePlante({
         <input type="hidden" name="plante" value={p.id} />
         <SlettKnapp navn={p.navn} />
       </form>
-    </>
+    </Side>
   );
 }

@@ -9,7 +9,7 @@ export default async function LoggInn({
   const { sendt, feil } = await searchParams;
 
   return (
-    <>
+    <main className="ramme">
       <Skilt />
       <h1>Tidsklemma</h1>
       <div className="strek" />
@@ -24,6 +24,6 @@ export default async function LoggInn({
       ) : (
         <Innlogging epostFeil={Boolean(feil)} />
       )}
-    </>
+    </main>
   );
 }

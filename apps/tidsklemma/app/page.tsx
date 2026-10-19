@@ -6,7 +6,7 @@ import { Ikon } from "./ikoner";
 import { lagreFornavn } from "./meg/actions";
 import { hentBruker } from "./meg/bruker";
 import { PasskeyForslag } from "./passkey-forslag";
-import { Topp } from "./skilt";
+import { Side } from "./side";
 
 const farger = ["brun", "blaa", "gronn", "krem"] as const;
 
@@ -37,8 +37,7 @@ export default async function Hjem() {
   }
 
   return (
-    <>
-      <Topp />
+    <Side>
       <p className="hilsen">
         {hilsen()}
         {bruker?.fornavn ? `, ${bruker.fornavn}` : husstand && <span className="dempet"> · {husstand.name}</span>}
@@ -89,6 +88,6 @@ export default async function Hjem() {
         </div>
       )}
 
-    </>
+    </Side>
   );
 }
