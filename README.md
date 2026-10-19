@@ -33,7 +33,7 @@ Appen kjører på http://localhost:3000.
 **Supabase** (ett prosjekt, `hzyjshudlfciedqufuva`):
 
 1. `npx supabase link --project-ref hzyjshudlfciedqufuva` og `npx supabase db push`.
-2. **Authentication → URL Configuration**: Site URL = produksjonsadressen på Vercel. Redirect URLs: `http://localhost:3000/**`, `https://<produksjonsadresse>/**` og `https://*-<vercel-team>.vercel.app/**`.
+2. **Authentication → URL Configuration**: Site URL = `https://tidsklemma.vercel.app`. Redirect URLs: `https://tidsklemma.vercel.app/**` og `http://localhost:3000/**`. Skal innlogging virke i forhåndsvisninger, legg til `https://*-<vercel-team>.vercel.app/**` med ditt eget team-navn – aldri et bredere mønster som `https://tidsklemma-*.vercel.app/**`, som også slipper gjennom andres prosjekter.
 3. Legg inn brukerne under **Authentication → Users → Add user**. Appen lar bare eksisterende brukere logge inn.
 4. Legg inn husstanden i **SQL Editor**:
    ```sql
@@ -45,7 +45,7 @@ Appen kjører på http://localhost:3000.
    where u.email in ('...', '...');
    ```
 
-**Vercel** (ett prosjekt): Root Directory `apps/tidsklemma`, og miljøvariablene `NEXT_PUBLIC_SUPABASE_URL` og `NEXT_PUBLIC_SUPABASE_ANON_KEY` for Production og Preview.
+**Vercel** (ett prosjekt, https://tidsklemma.vercel.app): Root Directory `apps/tidsklemma`, og miljøvariablene `NEXT_PUBLIC_SUPABASE_URL` og `NEXT_PUBLIC_SUPABASE_ANON_KEY` for Production og Preview.
 
 ## Ny del
 
