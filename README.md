@@ -41,6 +41,8 @@ Endringer i databasen gjøres i nettleseren: lim inn hver fil i `supabase/migrat
 4. **Authentication → Hooks → Before User Created**: velg Postgres-funksjonen `public.hook_bare_inviterte`. Den stopper alle som ikke er invitert.
 5. **Authentication → Sign In / Providers**: slå på **Allow new users to sign up**. Gjør dette *etter* steg 4, ellers kan hvem som helst lage konto i mellomtiden.
 
+6. **Project Settings → Data API → Exposed schemas**: legg til schemaene til delene (`planter`).
+
 Nye medlemmer inviteres fra **Husstand** i appen. Den inviterte logger inn med e-posten sin på https://tidsklemma.vercel.app og blir meldt inn automatisk.
 
 Den aller første husstanden og brukeren ble laget manuelt (**Authentication → Users → Add user**, deretter i SQL Editor):
@@ -63,6 +65,10 @@ where u.email in ('...');
 4. Kjør migrasjonen i SQL Editor, legg schemaet til under **Project Settings → Data API → Exposed schemas**, og legg det til i `gen:types` i `packages/db/package.json`.
 
 I koden når du delens tabeller med `supabase.schema("<del>").from("...")`.
+
+## Deler
+
+- **Planter** (`app/planter`, schema `planter`): husstandens planter og vanning. Plantelisten med norske navn og vanningsintervall ligger i `app/planter/katalog.ts`. Vinterintervallet brukes oktober–mars. Startsiden viser en rød prikk når noe trenger vann.
 
 ## Regler
 

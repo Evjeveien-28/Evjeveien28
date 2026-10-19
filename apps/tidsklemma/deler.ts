@@ -8,4 +8,4 @@ export const deler: {
   ikon: IkonNavn;
   /** Flisfarge på startsiden. Uten farge går flisene på rundgang: brun, lyseblå, grønn, krem. */
   farge?: "brun" | "blaa" | "gronn" | "krem";
-}[] = [];
+}[] = [{ slug: "planter", navn: "Planter", beskrivelse: "Vanning", ikon: "plante", farge: "gronn" }];
