@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { Card } from "@hjem/ui";
 import { createClient } from "@hjem/db/server";
 import { inviter, trekkTilbake } from "./actions";
+import { Side } from "../side";
 import { DelInvitasjon } from "./del-invitasjon";
 
 export default async function Husstand({
@@ -14,20 +14,13 @@ export default async function Husstand({
   const { data: husstander } = await supabase.from("households").select("id, name");
   const husstand = husstander?.[0];
 
-  const tilbake = (
-    <Link href="/meg" className="tilbake">
-      ← Meg
-    </Link>
-  );
+  const tilbake = { href: "/meg", navn: "Meg" };
 
   if (!husstand) {
     return (
-      <>
-        {tilbake}
-        <h2>Husstanden</h2>
-        <div className="strek venstre" />
+      <Side tittel="Husstanden" tilbake={tilbake}>
         <p>Du er ikke medlem av en husstand ennå.</p>
-      </>
+      </Side>
     );
   }
 
@@ -39,11 +32,7 @@ export default async function Husstand({
   const minId = meg?.claims.sub;
 
   return (
-    <>
-      {tilbake}
-      <h2>{husstand.name}</h2>
-      <div className="strek venstre" />
-
+    <Side tittel={husstand.name} tilbake={tilbake}>
       {invitert && (
         <Card title="Invitasjon lagt inn">
           <p>Be {invitert} gå til Tidsklemma og logge inn med e-posten sin. Da blir de med i husstanden.</p>
@@ -108,6 +97,6 @@ export default async function Husstand({
         </button>
         {feil && <p className="feil">Det gikk ikke å invitere. Sjekk adressen og prøv igjen.</p>}
       </form>
-    </>
+    </Side>
   );
 }

@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Barlow, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
-import { Brukerknapp } from "./meg/brukerknapp";
 
 const barlow = Barlow({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-barlow" });
 const barlowCondensed = Barlow_Condensed({
@@ -25,10 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="nb" className={`${barlow.variable} ${barlowCondensed.variable}`}>
       <body>
-        <div className="ramme">
-          <Brukerknapp />
-          {children}
-        </div>
+        <div className="app">{children}</div>
       </body>
     </html>
   );

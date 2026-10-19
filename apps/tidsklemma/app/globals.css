@@ -27,18 +27,19 @@ a { color: inherit; }
 button, input { font: inherit; color: inherit; }
 :focus-visible { outline: 3px solid var(--lyseblaa); outline-offset: 2px; }
 
-/* Rammen rundt hele appen */
+/* Appen: topplinje over rammen, rammen fyller resten */
+.app { max-width: 480px; margin: 0 auto; min-height: calc(100dvh - 28px); display: flex; flex-direction: column; }
 .ramme {
-  position: relative;
-  max-width: 480px;
-  min-height: calc(100dvh - 28px);
-  margin: 0 auto;
+  flex: 1;
   border: 2px solid var(--brun);
   border-radius: 20px;
   padding: 22px;
   display: flex;
   flex-direction: column;
 }
+
+/* Topplinje: tilbake-pil, tittel, handling og profil */
+.sidetopp { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 2px 6px 12px; min-height: 56px; }
 
 /* Overskrifter i skilt-skrift */
 .skiltskrift, h1, h2 { font-family: var(--font-barlow-condensed), sans-serif; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
@@ -173,7 +174,8 @@ label { display: block; }
 .merke-rod { position: absolute; top: 10px; right: 10px; min-width: 28px; height: 28px; padding: 0 8px; border-radius: 14px; background: #b42318; color: #fff; font-weight: 700; font-size: 16px; line-height: 28px; text-align: center; box-shadow: 0 0 0 3px var(--krem); }
 
 /* Planter */
-.tittelrad { display: flex; justify-content: space-between; align-items: center; }
+.tittelrad { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.tilbake + .tittelrad h2 { margin-top: 10px; }
 .tittelrad h2 { margin-bottom: 8px; }
 .pluss { width: 48px; height: 48px; border-radius: 12px; background: var(--brun); color: #fff; font-size: 30px; line-height: 48px; text-align: center; text-decoration: none; box-shadow: 0 4px 0 #3e2412; cursor: pointer; position: relative; }
 .pluss:focus-within { outline: 3px solid var(--lyseblaa); outline-offset: 2px; }
@@ -192,7 +194,7 @@ label { display: block; }
 .s-ok { color: var(--dempet); }
 .vannet { background: var(--lyseblaa); color: var(--valnott); border: 1.5px solid #6f8fa8; border-radius: 10px; padding: 10px 12px; font-weight: 600; font-size: 15px; display: inline-flex; gap: 4px; align-items: center; min-height: 44px; cursor: pointer; box-shadow: 0 3px 0 #6f8fa8; }
 .inline-vann { background: none; border: 0; color: var(--brun); font-weight: 700; font-size: 14px; display: inline-flex; gap: 3px; align-items: center; min-height: 44px; padding: 0 4px; cursor: pointer; text-decoration: underline; text-decoration-color: var(--lyseblaa); text-decoration-thickness: 3px; text-underline-offset: 4px; }
-.detaljtopp { display: flex; gap: 14px; align-items: center; margin: 14px 0 16px; }
+.detaljtopp { display: flex; gap: 12px; align-items: center; margin: 0 0 16px; }
 .h2m { font-size: 36px; margin: 0; }
 .datovalg { margin-top: 10px; }
 .historikk { list-style: none; margin: 0; padding: 0; }
@@ -261,10 +263,7 @@ fieldset.kort legend { padding: 0 4px; }
 .inline-rad { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 4px; }
 .inline-knapp { background: none; border: 0; padding: 0; min-height: 44px; display: inline-flex; align-items: center; color: var(--brun); font-weight: 700; font-size: 15px; cursor: pointer; text-decoration: underline; text-decoration-color: var(--lyseblaa); text-decoration-thickness: 3px; text-underline-offset: 4px; }
 
-/* Brukerikon øverst til høyre */
-.brukerknapp { position: absolute; top: 16px; right: 16px; width: 44px; height: 44px; border-radius: 50%; background: var(--lyseblaa); color: var(--valnott); display: grid; place-items: center; font-weight: 700; font-size: 18px; text-decoration: none; box-shadow: 0 3px 0 #6f8fa8; z-index: 1; }
-.brukerknapp:active { transform: translateY(3px); box-shadow: none; }
-.topp { padding-right: 52px; }
-.tilbake + h2, .tilbake ~ .tittelrad { margin-top: 18px; }
+/* Profilikon i topplinjen: diskret, uten skygge */
+.brukerknapp { width: 40px; height: 40px; border-radius: 50%; background: var(--krem-mork); color: var(--valnott); border: 1.5px solid #d9c9b0; display: grid; place-items: center; font-weight: 600; font-size: 16px; text-decoration: none; flex: none; }
 .meg-meny { display: flex; flex-direction: column; margin: 8px 0; }
 .meg-lenke { display: flex; justify-content: space-between; align-items: center; min-height: 52px; border-bottom: 1px solid #e6d9c2; text-decoration: none; font-size: 18px; }

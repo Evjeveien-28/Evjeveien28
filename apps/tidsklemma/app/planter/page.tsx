@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@hjem/db/server";
 import { Ikon } from "../ikoner";
 import { vann } from "./actions";
+import { Side } from "../side";
 import { Angre } from "./angre";
 import { DatabaseFeil } from "./database-feil";
 import { NyPlanteKnapp } from "./ny-knapp";
@@ -26,18 +27,12 @@ export default async function Planter({
   const supabase = await createClient();
   const husstand = await hentHusstand(supabase);
 
-  const tilbake = (
-    <Link href="/" className="tilbake">
-      ← Tilbake
-    </Link>
-  );
+  const tilbake = { href: "/", navn: "Tilbake" };
   if (!husstand) {
     return (
-      <>
-        {tilbake}
-        <h2>Planter</h2>
+      <Side tittel="Planter" tilbake={tilbake}>
         <p>Du er ikke medlem av en husstand ennå.</p>
-      </>
+      </Side>
     );
   }
 
@@ -47,12 +42,9 @@ export default async function Planter({
     [planter, navn] = await Promise.all([hentPlanter(supabase, husstand.id), hentNavn(supabase, husstand.id)]);
   } catch (e) {
     return (
-      <>
-        {tilbake}
-        <h2>Planter</h2>
-        <div className="strek venstre" />
+      <Side tittel="Planter" tilbake={tilbake}>
         <DatabaseFeil melding={e instanceof Error ? e.message : String(e)} />
-      </>
+      </Side>
     );
   }
   const trenger = planter.filter((p) => p.trengerVann);
@@ -89,14 +81,7 @@ export default async function Planter({
   };
 
   return (
-    <>
-      {tilbake}
-      <div className="tittelrad">
-        <h2>Planter</h2>
-        <NyPlanteKnapp />
-      </div>
-      <div className="strek venstre" />
-
+    <Side tittel="Planter" tilbake={tilbake} handling={<NyPlanteKnapp />}>
       {sok.feil && <p className="feil">Det gikk ikke å lagre. Prøv igjen.</p>}
       {sok.allerede && <p className="dempet">Allerede registrert som vannet {kortDato(sok.allerede)}</p>}
 
@@ -150,6 +135,6 @@ export default async function Planter({
       </nav>
 
       {angreIder.length > 0 && <Angre vanninger={angreIder} dato={sok.dato} tilbake="/planter" />}
-    </>
+    </Side>
   );
 }

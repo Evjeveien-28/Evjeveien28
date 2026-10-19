@@ -1,19 +1,14 @@
-import Link from "next/link";
+import { Side } from "../side";
 import { Passkeys } from "./passkeys";
 
 export default function Innlogging() {
   return (
-    <>
-      <Link href="/meg" className="tilbake">
-        ← Meg
-      </Link>
-      <h2>Innlogging</h2>
-      <div className="strek venstre" />
+    <Side tittel="Innlogging" tilbake={{ href: "/meg", navn: "Meg" }}>
       <p>
         Passkeys lar deg logge inn med Face ID, fingeravtrykk eller skjermlåsen. Har du mistet en enhet, slett
         passkeyen her. E-postlenken virker alltid.
       </p>
       <Passkeys />
-    </>
+    </Side>
   );
 }

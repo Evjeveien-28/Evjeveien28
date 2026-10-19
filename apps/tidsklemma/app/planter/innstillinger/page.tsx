@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Side } from "../../side";
 import { createClient } from "@hjem/db/server";
 import { settFellesAuto } from "../actions";
 import { hentAutoJustering, hentHusstand } from "../data";
@@ -10,13 +10,7 @@ export default async function Innstillinger() {
   const pa = husstand ? await hentAutoJustering(supabase, husstand.id) : true;
 
   return (
-    <>
-      <Link href="/planter" className="tilbake">
-        ← Planter
-      </Link>
-      <h2>Innstillinger</h2>
-      <div className="strek venstre" />
-
+    <Side tittel="Innstillinger" tilbake={{ href: "/planter", navn: "Planter" }}>
       <div className="kort">
         <p className="kt">Automatisk justering</p>
         <p>
@@ -47,6 +41,6 @@ export default async function Innstillinger() {
         <p>Rød prikk på Planter-flisen når noe trenger vann.</p>
         <p className="dempet liten">Varsel på telefonen med eget klokkeslett kommer senere.</p>
       </div>
-    </>
+    </Side>
   );
 }
