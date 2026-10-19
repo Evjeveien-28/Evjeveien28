@@ -92,16 +92,23 @@ export async function leggTil(formData: FormData) {
   const kallenavn = String(formData.get("kallenavn") ?? "").trim();
   const plassering = String(formData.get("plassering") ?? "").trim();
 
+  // Gjenkjent fra bilde, men ikke i listen: latinsk navn, og eventuelt en plante i samme slekt å låne intervall fra.
+  const latin = String(formData.get("latin") ?? "").trim().slice(0, 120);
+  const lik = katalogPlante ? undefined : finnIKatalog(String(formData.get("lik") ?? ""));
+
   let navn: string;
   let sommer: number;
   let vinter: number;
   if (katalogPlante) {
     ({ sommer, vinter } = intervaller(katalogPlante));
     navn = kallenavn || katalogPlante.navn;
+  } else if (lik) {
+    ({ sommer, vinter } = intervaller(lik));
+    navn = kallenavn || latin;
   } else {
     const g = grupper[gruppe] ?? grupper.middels;
     ({ sommer, vinter } = g);
-    navn = kallenavn;
+    navn = kallenavn || latin;
   }
   if (!navn) redirect("/planter/ny?feil=navn");
   // «Annen plante» kan få egne dager med en gang, f.eks. et juletre som skal vannes hver dag.
@@ -115,6 +122,7 @@ export async function leggTil(formData: FormData) {
       household_id: husstand.id,
       navn: navn.slice(0, 80),
       katalog_id: katalogPlante?.id ?? null,
+      latinsk_navn: katalogPlante ? null : latin || null,
       plassering: plassering.slice(0, 80) || null,
       standard_sommer: sommer,
       standard_vinter: vinter,

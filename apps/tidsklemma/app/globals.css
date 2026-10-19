@@ -225,3 +225,17 @@ fieldset.kort legend { padding: 0 4px; }
 .radio input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--brun); flex: none; }
 .punkter { margin: 6px 0; padding-left: 18px; }
 .punkter li { margin: 4px 0; }
+
+/* Bildegjenkjenning */
+.ta-bilde { cursor: pointer; margin-bottom: 14px; }
+.foto { border-radius: 14px; overflow: hidden; margin-bottom: 14px; background: var(--krem-mork); }
+.foto img { display: block; width: 100%; max-height: 240px; object-fit: cover; }
+.forslag-knapp.gjenkjent { justify-content: flex-start; }
+.forslag-bilde { width: 56px; height: 56px; border-radius: 10px; object-fit: cover; flex: none; background: #e6d9c2; }
+.forslag-knapp .ft { flex: 1; min-width: 0; }
+.kreditt { font-style: normal !important; font-size: 11px !important; opacity: 0.8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sikker-kol { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; width: 64px; flex: none; }
+.sikker { width: 64px; height: 6px; background: #e6d9c2; border-radius: 3px; overflow: hidden; }
+.sikker i { display: block; height: 100%; background: var(--avokado); }
+.pst { font-size: 13px; color: var(--dempet); }
+.kilde { font-size: 12px; color: var(--dempet); text-align: center; margin: 4px 0 0; }

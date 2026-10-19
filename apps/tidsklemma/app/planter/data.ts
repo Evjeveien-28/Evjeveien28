@@ -5,12 +5,13 @@ import { dagerMellom, iDag, leggTilDager } from "./tid";
 type Supabase = Awaited<ReturnType<typeof createClient>>;
 
 export const PLANTEFELT =
-  "id, navn, katalog_id, plassering, standard_sommer, standard_vinter, manuelt_sommer, manuelt_vinter, auto_justering";
+  "id, navn, katalog_id, latinsk_navn, plassering, standard_sommer, standard_vinter, manuelt_sommer, manuelt_vinter, auto_justering";
 
 export type PlanteRad = {
   id: string;
   navn: string;
   katalog_id: string | null;
+  latinsk_navn: string | null;
   plassering: string | null;
   standard_sommer: number;
   standard_vinter: number;
