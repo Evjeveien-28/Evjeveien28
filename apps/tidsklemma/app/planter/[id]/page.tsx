@@ -2,10 +2,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@hjem/db/server";
 import { Ikon } from "../../ikoner";
-import { fjernVanning, vann } from "../actions";
+import { fjernVanning, settAuto, tellesIkke, tilbakestill, vann } from "../actions";
 import { Angre } from "../angre";
-import { beregnStatus, hentHusstand, hentNavn, type PlanteRad } from "../data";
-import { finnIKatalog, grupper, intervaller } from "../katalog";
+import { beregnStatus, hentAutoJustering, hentHusstand, hentNavn, PLANTEFELT, type PlanteRad, type Vanning } from "../data";
+import { finnIKatalog, intervaller } from "../katalog";
+import { Intervallkort } from "../intervallkort";
 import { Plantebilde } from "../plantebilde";
 import { iDag, kortDato, sidenTekst } from "../tid";
 
@@ -24,20 +25,18 @@ export default async function Plante({
   const { data } = await supabase
     .schema("planter")
     .from("planter")
-    .select("id, navn, katalog_id, plassering, sommer_dager, vinter_dager, vanninger(id, dato, registrert_av, etterregistrert)")
+    .select(`${PLANTEFELT}, vanninger(id, dato, registrert_av, etterregistrert, telles_ikke)`)
     .eq("id", id)
     .order("dato", { referencedTable: "vanninger", ascending: false })
     .maybeSingle();
   if (!data || !husstand) notFound();
 
-  const { vanninger, ...rad } = data as PlanteRad & {
-    vanninger: { id: string; dato: string; registrert_av: string | null; etterregistrert: boolean }[];
-  };
+  const { vanninger, ...rad } = data as PlanteRad & { vanninger: Vanning[] };
   const idag = iDag();
-  const p = beregnStatus(rad, vanninger[0], idag);
-  const navn = await hentNavn(supabase, husstand.id);
+  const [fellesAuto, navn] = await Promise.all([hentAutoJustering(supabase, husstand.id), hentNavn(supabase, husstand.id)]);
+  const p = beregnStatus(rad, vanninger, fellesAuto, idag);
   const art = finnIKatalog(p.katalog_id);
-  const tips = art ? intervaller(art).tips : grupper.middels.tips;
+  const tips = art ? intervaller(art).tips : null;
   const sti = `/planter/${p.id}`;
   const angreIder = ([] as string[]).concat(sok.angre ?? []);
 
@@ -64,9 +63,9 @@ export default async function Plante({
       </div>
 
       <div className="kort">
-        <p className="kt">Vannes ca. hver {p.intervall}. dag</p>
+        <p className="kt">{p.intervall === 1 ? "Vannes hver dag" : `Vannes ca. hver ${p.intervall}. dag`}</p>
         <p>{status}</p>
-        <p className="dempet liten">{tips}</p>
+        {tips && <p className="dempet liten">{tips}</p>}
       </div>
 
       <form action={vann}>
@@ -109,6 +108,8 @@ export default async function Plante({
       {sok.feil === "dato" && <p className="feil">Velg en dato som ikke er i fremtiden.</p>}
       {sok.allerede && <p className="dempet">Allerede registrert som vannet {kortDato(sok.allerede)}</p>}
 
+      <Intervallkort plante={p} fellesAuto={fellesAuto} idag={idag} settAuto={settAuto} tilbakestill={tilbakestill} />
+
       <p className="kt" style={{ marginTop: 24 }}>
         Historikk
       </p>
@@ -122,7 +123,16 @@ export default async function Plante({
               <span className="historikk-hvem">
                 {navn(v.registrert_av) ?? "ukjent"}
                 {v.etterregistrert && <em className="dempet"> (etterregistrert)</em>}
+                {v.telles_ikke && <em className="dempet"> · telles ikke med</em>}
               </span>
+              <form action={tellesIkke}>
+                <input type="hidden" name="vanning" value={v.id} />
+                <input type="hidden" name="verdi" value={v.telles_ikke ? "0" : "1"} />
+                <input type="hidden" name="tilbake" value={sti} />
+                <button type="submit" className="mini-lenke">
+                  {v.telles_ikke ? "Tell med" : "Ikke tell"}
+                </button>
+              </form>
               <form action={fjernVanning}>
                 <input type="hidden" name="vanning" value={v.id} />
                 <input type="hidden" name="tilbake" value={sti} />
@@ -134,6 +144,10 @@ export default async function Plante({
           ))}
         </ul>
       )}
+
+      <p className="dempet liten">
+        «Ikke tell» holder en vanning utenfor når intervallet læres, f.eks. når du vannet ekstra før en ferie.
+      </p>
 
       <div className="bunnmeny">
         <Link href={`${sti}/endre`}>Endre eller slett plante</Link>

@@ -62,7 +62,7 @@ export function NyPlante() {
           <label htmlFor="kallenavn" className="kt">
             Navn på planten
           </label>
-          <input id="kallenavn" name="kallenavn" required maxLength={80} defaultValue={tekst.trim()} className="felt" />
+          <input id="kallenavn" name="kallenavn" required maxLength={80} defaultValue={tekst.trim().charAt(0).toUpperCase() + tekst.trim().slice(1)} className="felt" />
           <p className="kt">Hvordan er planten?</p>
           <div className="knapperad" role="radiogroup" aria-label="Type plante">
             {valgbareGrupper.map((g) => (
@@ -80,8 +80,22 @@ export function NyPlante() {
           </div>
           <input type="hidden" name="gruppe" value={gruppe} />
           <p className="dempet liten">
-            Vannes ca. hver {iv.sommer}. dag om sommeren og hver {iv.vinter}. om vinteren. Kan endres senere.
+            Vannes ca. hver {iv.sommer}. dag om sommeren og hver {iv.vinter}. om vinteren.
           </p>
+          <label htmlFor="dager" className="kt">
+            Eller: vannes hver … dag <span className="valgfritt">(valgfritt)</span>
+          </label>
+          <input
+            id="dager"
+            name="dager"
+            type="number"
+            inputMode="numeric"
+            min={1}
+            max={120}
+            placeholder="F.eks. 1 for et juletre"
+            className="felt"
+          />
+          <p className="dempet liten">Setter du egne dager, brukes de alltid, og appen prøver ikke å lære et annet intervall.</p>
         </>
       ) : (
         <>

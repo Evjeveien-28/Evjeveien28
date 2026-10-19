@@ -130,6 +130,10 @@ export default async function Planter({
         </>
       )}
 
+      <nav className="bunnmeny" aria-label="Planter">
+        <Link href="/planter/innstillinger">Innstillinger</Link>
+      </nav>
+
       {angreIder.length > 0 && <Angre vanninger={angreIder} dato={sok.dato} tilbake="/planter" />}
     </>
   );

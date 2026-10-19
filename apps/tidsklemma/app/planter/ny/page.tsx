@@ -12,6 +12,7 @@ export default async function Ny({ searchParams }: { searchParams: Promise<{ fei
       <div className="strek venstre" />
       {feil === "navn" && <p className="feil">Gi planten et navn.</p>}
       {feil === "lagre" && <p className="feil">Det gikk ikke å lagre. Prøv igjen.</p>}
+      {feil === "dager" && <p className="feil">Antall dager må være mellom 1 og 120.</p>}
       <NyPlante />
     </>
   );

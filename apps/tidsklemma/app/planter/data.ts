@@ -1,18 +1,36 @@
 import { createClient } from "@hjem/db/server";
-import { dagerMellom, erVinter, iDag, leggTilDager } from "./tid";
+import { arstid, laerIntervall, velgIntervall, type Arstid, type Intervallvalg } from "./laering";
+import { dagerMellom, iDag, leggTilDager } from "./tid";
 
 type Supabase = Awaited<ReturnType<typeof createClient>>;
+
+export const PLANTEFELT =
+  "id, navn, katalog_id, plassering, standard_sommer, standard_vinter, manuelt_sommer, manuelt_vinter, auto_justering";
 
 export type PlanteRad = {
   id: string;
   navn: string;
   katalog_id: string | null;
   plassering: string | null;
-  sommer_dager: number;
-  vinter_dager: number;
+  standard_sommer: number;
+  standard_vinter: number;
+  manuelt_sommer: number | null;
+  manuelt_vinter: number | null;
+  auto_justering: boolean;
+};
+
+export type Vanning = {
+  id: string;
+  dato: string;
+  registrert_av: string | null;
+  etterregistrert: boolean;
+  telles_ikke: boolean;
 };
 
 export type PlanteStatus = PlanteRad & {
+  /** Intervallvalget for hver årstid. */
+  valg: Record<Arstid, Intervallvalg>;
+  /** Intervallet som gjelder nå. */
   intervall: number;
   sistVannet: string | null;
   sistVannetAv: string | null;
@@ -26,15 +44,35 @@ export async function hentHusstand(supabase: Supabase) {
   return (data?.[0] as { id: string; name: string } | undefined) ?? null;
 }
 
-export function beregnStatus(
-  plante: PlanteRad,
-  sist: { dato: string; registrert_av: string | null } | undefined,
-  idag = iDag(),
-): PlanteStatus {
-  const intervall = erVinter(idag) ? plante.vinter_dager : plante.sommer_dager;
+/** Husstandens felles bryter for automatisk justering. På hvis den aldri er satt. */
+export async function hentAutoJustering(supabase: Supabase, husstandId: string) {
+  const { data } = await supabase
+    .schema("planter")
+    .from("innstillinger")
+    .select("auto_justering")
+    .eq("household_id", husstandId)
+    .maybeSingle();
+  return data?.auto_justering ?? true;
+}
+
+/** `vanninger` er nyeste først. */
+export function beregnStatus(plante: PlanteRad, vanninger: Vanning[], fellesAuto: boolean, idag = iDag()): PlanteStatus {
+  const utgangspunkt = {
+    sommer: plante.manuelt_sommer ?? plante.standard_sommer,
+    vinter: plante.manuelt_vinter ?? plante.standard_vinter,
+  };
+  const laert = laerIntervall(vanninger, utgangspunkt);
+  const auto = fellesAuto && plante.auto_justering;
+  const valg = {
+    sommer: velgIntervall("sommer", { standard: plante.standard_sommer, manuelt: plante.manuelt_sommer }, laert.sommer, auto),
+    vinter: velgIntervall("vinter", { standard: plante.standard_vinter, manuelt: plante.manuelt_vinter }, laert.vinter, auto),
+  };
+  const intervall = valg[arstid(idag)].dager;
+  const sist = vanninger[0];
   const dagerIgjen = sist ? dagerMellom(idag, leggTilDager(sist.dato, intervall)) : 0;
   return {
     ...plante,
+    valg,
     intervall,
     sistVannet: sist?.dato ?? null,
     sistVannetAv: sist?.registrert_av ?? null,
@@ -45,18 +83,22 @@ export function beregnStatus(
 
 /** Alle husstandens planter med status, sortert etter hvem som trenger vann først. */
 export async function hentPlanter(supabase: Supabase, husstandId: string): Promise<PlanteStatus[]> {
-  const { data, error } = await supabase
-    .schema("planter")
-    .from("planter")
-    .select("id, navn, katalog_id, plassering, sommer_dager, vinter_dager, vanninger(dato, registrert_av)")
-    .eq("household_id", husstandId)
-    .order("dato", { referencedTable: "vanninger", ascending: false })
-    .limit(1, { referencedTable: "vanninger" });
+  const [{ data, error }, fellesAuto] = await Promise.all([
+    supabase
+      .schema("planter")
+      .from("planter")
+      .select(`${PLANTEFELT}, vanninger(id, dato, registrert_av, etterregistrert, telles_ikke)`)
+      .eq("household_id", husstandId)
+      .order("dato", { referencedTable: "vanninger", ascending: false })
+      // Nok historikk til å lære begge årstider.
+      .limit(60, { referencedTable: "vanninger" }),
+    hentAutoJustering(supabase, husstandId),
+  ]);
   if (error) throw new Error(`Klarte ikke å hente planter: ${error.message}`);
 
   const idag = iDag();
-  return (data as (PlanteRad & { vanninger: { dato: string; registrert_av: string | null }[] })[])
-    .map(({ vanninger, ...p }) => beregnStatus(p, vanninger[0], idag))
+  return (data as (PlanteRad & { vanninger: Vanning[] })[])
+    .map(({ vanninger, ...p }) => beregnStatus(p, vanninger, fellesAuto, idag))
     .sort((a, b) => a.dagerIgjen - b.dagerIgjen || a.navn.localeCompare(b.navn, "nb"));
 }
 

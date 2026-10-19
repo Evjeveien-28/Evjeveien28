@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@hjem/db/server";
 import { endre, slett } from "../../actions";
-import { finnIKatalog, intervaller } from "../../katalog";
+import { hentAutoJustering, hentHusstand, PLANTEFELT, type PlanteRad } from "../../data";
 import { SlettKnapp } from "./slett-knapp";
 
 export default async function EndrePlante({
@@ -16,16 +16,13 @@ export default async function EndrePlante({
   if (!/^[0-9a-f-]{36}$/.test(id)) notFound();
 
   const supabase = await createClient();
-  const { data: p } = await supabase
-    .schema("planter")
-    .from("planter")
-    .select("id, navn, katalog_id, plassering, sommer_dager, vinter_dager")
-    .eq("id", id)
-    .maybeSingle();
-  if (!p) notFound();
-
-  const art = finnIKatalog(p.katalog_id);
-  const standard = art ? intervaller(art) : null;
+  const [{ data }, husstand] = await Promise.all([
+    supabase.schema("planter").from("planter").select(PLANTEFELT).eq("id", id).maybeSingle(),
+    hentHusstand(supabase),
+  ]);
+  if (!data || !husstand) notFound();
+  const p = data as PlanteRad;
+  const autoPa = p.auto_justering && (await hentAutoJustering(supabase, husstand.id));
 
   return (
     <>
@@ -46,22 +43,55 @@ export default async function EndrePlante({
         </label>
         <input id="plassering" name="plassering" maxLength={80} defaultValue={p.plassering ?? ""} className="felt" />
 
-        <p className="kt">Vannes hver … dag</p>
+        <p className="kt">Vannes hver … dag, satt av deg</p>
         <div className="to-felt">
           <label>
             <span className="dempet liten">Sommer (apr.–sep.)</span>
-            <input name="sommer" type="number" inputMode="numeric" min={1} max={120} required defaultValue={p.sommer_dager} className="felt" />
+            <input
+              name="sommer"
+              type="number"
+              inputMode="numeric"
+              min={1}
+              max={120}
+              defaultValue={p.manuelt_sommer ?? ""}
+              placeholder={`Standard ${p.standard_sommer}`}
+              className="felt"
+            />
           </label>
           <label>
             <span className="dempet liten">Vinter (okt.–mar.)</span>
-            <input name="vinter" type="number" inputMode="numeric" min={1} max={180} required defaultValue={p.vinter_dager} className="felt" />
+            <input
+              name="vinter"
+              type="number"
+              inputMode="numeric"
+              min={1}
+              max={180}
+              defaultValue={p.manuelt_vinter ?? ""}
+              placeholder={`Standard ${p.standard_vinter}`}
+              className="felt"
+            />
           </label>
         </div>
-        {standard && (
-          <p className="dempet liten">
-            Standard for {art!.navn}: hver {standard.sommer}. dag om sommeren, hver {standard.vinter}. om vinteren.
-          </p>
+        <p className="dempet liten">
+          Standard: hver {p.standard_sommer}. dag om sommeren og hver {p.standard_vinter}. om vinteren. La feltet stå tomt for å bruke
+          standard.
+        </p>
+
+        {autoPa && (
+          <fieldset className="kort">
+            <legend className="kt">Automatisk justering er på</legend>
+            <p>Hvis du setter egne verdier:</p>
+            <label className="radio">
+              <input type="radio" name="auto" value="av" defaultChecked />
+              Slå av for denne planten, og bruk alltid mine verdier
+            </label>
+            <label className="radio">
+              <input type="radio" name="auto" value="pa" />
+              Lær videre, med mine verdier som utgangspunkt
+            </label>
+          </fieldset>
         )}
+
         {feil && <p className="feil">Sjekk navnet og antall dager.</p>}
         <button type="submit" className="primar" style={{ marginTop: 8 }}>
           Lagre

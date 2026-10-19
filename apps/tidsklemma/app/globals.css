@@ -207,3 +207,21 @@ label { display: block; }
 .to-felt { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: 28px; width: min(436px, calc(100vw - 44px)); background: var(--valnott); color: var(--krem); border-radius: 12px; padding: 8px 8px 8px 16px; display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 15px; box-shadow: 0 6px 20px rgba(74, 46, 28, 0.3); }
 .toast button { background: none; border: 0; color: var(--lyseblaa); font-weight: 700; font-size: 16px; text-decoration: underline; text-underline-offset: 3px; min-height: 44px; padding: 0 10px; cursor: pointer; }
+
+/* Intervallkort */
+.intervaller { width: 100%; border-collapse: collapse; margin: 6px 0 8px; font-size: 16px; }
+.intervaller th, .intervaller td { text-align: left; padding: 6px 4px; border-bottom: 1px solid #e6d9c2; }
+.intervaller thead th { font-weight: 600; font-size: 14px; }
+.intervaller tbody th { font-weight: 400; color: var(--dempet); }
+.intervaller td.i-bruk { font-weight: 700; }
+.intervaller td.i-bruk .merke-bruk { display: inline-block; background: var(--lyseblaa); border-radius: 999px; padding: 0 10px; }
+.auto-rad { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.liten-knapp { padding: 6px 12px; min-height: 40px; font-size: 15px; text-decoration: none; display: inline-flex; align-items: center; }
+.mini-lenke { background: none; border: 0; color: var(--brun); font-size: 14px; padding: 0 6px; min-height: 44px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.visuelt-skjult { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+fieldset.kort { margin: 8px 0 14px; }
+fieldset.kort legend { padding: 0 4px; }
+.radio { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; }
+.radio input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--brun); flex: none; }
+.punkter { margin: 6px 0; padding-left: 18px; }
+.punkter li { margin: 4px 0; }
