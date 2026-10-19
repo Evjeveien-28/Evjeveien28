@@ -3,6 +3,7 @@ import { Card } from "@hjem/ui";
 import { createClient } from "@hjem/db/server";
 import { deler } from "../deler";
 import { loggUt } from "./actions";
+import { PasskeyForslag } from "./passkey-forslag";
 
 export default async function Hjem() {
   const supabase = await createClient();
@@ -18,6 +19,8 @@ export default async function Hjem() {
         <p>Du er ikke medlem av en husstand ennå.</p>
       )}
 
+      <PasskeyForslag />
+
       {deler.length === 0 ? (
         <p style={{ color: "#555" }}>Ingen deler ennå.</p>
       ) : (
@@ -30,11 +33,14 @@ export default async function Hjem() {
         ))
       )}
 
-      <form action={loggUt}>
-        <button type="submit" style={{ padding: 12, fontSize: 16 }}>
-          Logg ut
-        </button>
-      </form>
+      <div style={{ display: "flex", gap: 16, alignItems: "center", marginTop: 24 }}>
+        <Link href="/innlogging">Innlogging og passkeys</Link>
+        <form action={loggUt}>
+          <button type="submit" style={{ padding: 12, fontSize: 16 }}>
+            Logg ut
+          </button>
+        </form>
+      </div>
     </main>
   );
 }

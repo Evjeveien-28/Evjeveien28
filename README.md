@@ -10,6 +10,7 @@ apps/
     app/               Startside, innlogging, og én mappe per del
     deler.ts           Listen over deler som vises på startsiden
     proxy.ts           Fornyer innloggingen og sender utloggede til /logg-inn
+    app/passkey.ts     Hjelpefunksjoner for innlogging med Face ID/fingeravtrykk (passkeys)
 packages/
   ui/                  Delte React-komponenter (@hjem/ui)
   db/                  Supabase-klienter for nettleser, server og proxy (@hjem/db)
@@ -34,8 +35,9 @@ Appen kjører på http://localhost:3000.
 
 1. `npx supabase link --project-ref hzyjshudlfciedqufuva` og `npx supabase db push`.
 2. **Authentication → URL Configuration**: Site URL = `https://tidsklemma.vercel.app`. Redirect URLs: `https://tidsklemma.vercel.app/**` og `http://localhost:3000/**`. Skal innlogging virke i forhåndsvisninger, legg til `https://*-<vercel-team>.vercel.app/**` med ditt eget team-navn – aldri et bredere mønster som `https://tidsklemma-*.vercel.app/**`, som også slipper gjennom andres prosjekter.
-3. Legg inn brukerne under **Authentication → Users → Add user**. Appen lar bare eksisterende brukere logge inn.
-4. Legg inn husstanden i **SQL Editor**:
+3. **Authentication → Passkeys**: slå på passkeys. Relying Party ID = `tidsklemma.vercel.app`, navn = `Tidsklemma`, origin = `https://tidsklemma.vercel.app`. Passkeys virker bare på produksjonsadressen; lokalt og i forhåndsvisninger brukes e-postlenken.
+4. Legg inn brukerne under **Authentication → Users → Add user**. Appen lar bare eksisterende brukere logge inn.
+5. Legg inn husstanden i **SQL Editor**:
    ```sql
    with h as (
      insert into public.households (name) values ('Evjeveien 28') returning id
