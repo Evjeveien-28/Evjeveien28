@@ -58,7 +58,7 @@ export default async function Plante({
         <Plantebilde katalogId={p.katalog_id} storrelse={72} />
         <div>
           <h2 className="h2m">{p.navn}</h2>
-          <small className="dempet">{[art?.latin, p.plassering].filter(Boolean).join(" · ")}</small>
+          <small className="dempet">{[art?.latin ?? p.latinsk_navn, p.plassering].filter(Boolean).join(" · ")}</small>
         </div>
       </div>
 

@@ -43,6 +43,8 @@ Endringer i databasen gjøres i nettleseren: lim inn hver fil i `supabase/migrat
 
 6. **Project Settings → Data API → Exposed schemas**: legg til schemaene til delene (`planter`).
 
+**Pl@ntNet** (bildegjenkjenning av planter): lag en gratis konto på my.plantnet.org og legg API-nøkkelen inn i Vercel som `PLANTNET_API_KEY` (Production og Preview). Den brukes bare på serveren og skal ikke ha `NEXT_PUBLIC_` foran.
+
 Nye medlemmer inviteres fra **Husstand** i appen. Den inviterte logger inn med e-posten sin på https://tidsklemma.vercel.app og blir meldt inn automatisk.
 
 Den aller første husstanden og brukeren ble laget manuelt (**Authentication → Users → Add user**, deretter i SQL Editor):
@@ -68,7 +70,7 @@ I koden når du delens tabeller med `supabase.schema("<del>").from("...")`.
 
 ## Deler
 
-- **Planter** (`app/planter`, schema `planter`): husstandens planter og vanning. Plantelisten med norske navn og vanningsintervall ligger i `app/planter/katalog.ts`. Vinterintervallet brukes oktober–mars. Startsiden viser en rød prikk når noe trenger vann.
+- **Planter** (`app/planter`, schema `planter`): husstandens planter og vanning. Plantelisten med norske navn og vanningsintervall ligger i `app/planter/katalog.ts`. «Ta bilde» sender bildet via `app/planter/gjenkjenn/route.ts` til Pl@ntNet, og treffet kobles til listen via art, slekt eller familie. Vinterintervallet brukes oktober–mars. Startsiden viser en rød prikk når noe trenger vann.
 
 ## Regler
 
