@@ -1,6 +1,6 @@
-# Evjeveien 28
+# Tidsklemma
 
-Monorepo for hjemme-appene våre. pnpm + Turborepo + Next.js + Supabase, deployet på Vercel.
+Tidsklemma er serien med hjemme-appene våre i Evjeveien 28. Dette er monorepoet for dem: pnpm + Turborepo + Next.js + Supabase, deployet på Vercel.
 
 Alle appene deler ett Supabase-prosjekt: innlogging og husstand ligger i `public`, og hver app får sitt eget schema. Hver app er sitt eget Vercel-prosjekt.
 

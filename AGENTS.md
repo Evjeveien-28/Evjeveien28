@@ -1,4 +1,6 @@
-# Evjeveien 28
+# Tidsklemma
+
+Tidsklemma er serien med hjemme-appene i Evjeveien 28.
 
 Les `README.md` for struktur, oppskrift på ny app og reglene. Det viktigste:
 
