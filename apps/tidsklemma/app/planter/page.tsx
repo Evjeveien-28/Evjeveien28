@@ -4,7 +4,7 @@ import { Ikon } from "../ikoner";
 import { vann } from "./actions";
 import { Side } from "../side";
 import { Angre } from "./angre";
-import { DatabaseFeil } from "./database-feil";
+import { DatabaseFeil } from "../database-feil";
 import { NyPlanteKnapp } from "./ny-knapp";
 import { hentHusstand, hentNavn, hentPlanter, type PlanteStatus } from "./data";
 import { Plantebilde } from "./plantebilde";

@@ -1,6 +1,9 @@
 import { Card } from "@hjem/ui";
 import { createClient } from "@hjem/db/server";
-import { inviter, trekkTilbake } from "./actions";
+import Link from "next/link";
+import { inviter, leggTilPerson, trekkTilbake } from "./actions";
+import { DatabaseFeil } from "../database-feil";
+import { hentPersoner, type Person } from "./personer";
 import { Side } from "../side";
 import { DelInvitasjon } from "./del-invitasjon";
 
@@ -24,12 +27,14 @@ export default async function Husstand({
     );
   }
 
-  const [{ data: medlemmer }, { data: invitasjoner }, { data: meg }] = await Promise.all([
+  const [{ data: medlemmer }, { data: invitasjoner }, { data: meg }, personer] = await Promise.all([
     supabase.rpc("husstandens_medlemmer", { hid: husstand.id }),
     supabase.from("household_invitations").select("email").eq("household_id", husstand.id).order("created_at"),
     supabase.auth.getClaims(),
+    hentPersoner(supabase, husstand.id).catch((e: Error) => e),
   ]);
   const minId = meg?.claims.sub;
+  const epost = new Map((medlemmer as { user_id: string; email: string }[] | null)?.map((m) => [m.user_id, m.email]));
 
   return (
     <Side tittel={husstand.name} tilbake={tilbake}>
@@ -45,24 +50,40 @@ export default async function Husstand({
         </Card>
       )}
 
-      <Card title="Medlemmer">
-        <ul className="liste">
-          {(medlemmer as { user_id: string; email: string; fornavn?: string | null }[] | null)?.map((m) => (
-            <li key={m.user_id}>
-              <span>
-                {m.fornavn ? (
-                  <>
-                    <b>{m.fornavn}</b> <span className="dempet liten">{m.email}</span>
-                  </>
-                ) : (
-                  m.email
-                )}
-                {m.user_id === minId && <em className="dempet"> (deg)</em>}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </Card>
+      {personer instanceof Error ? (
+        <DatabaseFeil melding={personer.message} hva="personene" schema="public" tabeller="tabellen household_people" />
+      ) : (
+        <Card title="Personer">
+          <ul className="personliste">
+            {personer.map((p: Person) => (
+              <li key={p.id}>
+                <Link href={`/husstand/person/${p.id}`} className="person-lenke">
+                  <span className="fargeprikk" style={{ background: p.farge }} aria-hidden="true" />
+                  <span className="pt">
+                    <b>
+                      {p.navn}
+                      {p.user_id && p.user_id === minId && <em className="dempet"> (deg)</em>}
+                    </b>
+                    <small>{p.user_id ? (epost.get(p.user_id) ?? "Har app") : "Uten app"}</small>
+                  </span>
+                  <span className="pil" aria-hidden="true">›</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <form action={leggTilPerson} className="legg-til-person">
+            <input type="hidden" name="husstand" value={husstand.id} />
+            <label htmlFor="person-navn" className="visuelt-skjult">
+              Navn
+            </label>
+            <input id="person-navn" name="navn" required maxLength={40} autoComplete="off" placeholder="Navn" className="felt" />
+            <button type="submit" className="inline-knapp">
+              Legg til uten app
+            </button>
+          </form>
+          {feil === "person" && <p className="feil">Det gikk ikke å legge til. Prøv igjen.</p>}
+        </Card>
+      )}
 
       {invitasjoner && invitasjoner.length > 0 && (
         <Card title="Venter på innlogging" stiplet>
@@ -95,7 +116,7 @@ export default async function Husstand({
         <button type="submit" className="primar">
           Inviter
         </button>
-        {feil && <p className="feil">Det gikk ikke å invitere. Sjekk adressen og prøv igjen.</p>}
+        {feil === "1" && <p className="feil">Det gikk ikke å invitere. Sjekk adressen og prøv igjen.</p>}
       </form>
     </Side>
   );
