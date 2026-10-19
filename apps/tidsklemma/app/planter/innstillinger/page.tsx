@@ -18,7 +18,7 @@ export default async function Innstillinger() {
       <div className="strek venstre" />
 
       <div className="kort">
-        <p className="kt">Automatisk justering · {pa ? "på" : "av"}</p>
+        <p className="kt">Automatisk justering</p>
         <p>
           Appen lærer hvor ofte dere faktisk vanner hver plante, og bruker det i stedet for standard eller verdier du har satt selv.
         </p>
@@ -31,10 +31,13 @@ export default async function Innstillinger() {
           <li>Vanninger du merker «Ikke tell» inne på planten, tas ikke med.</li>
         </ul>
         <p className="dempet liten">Gjelder hele husstanden. Den kan også slås av for enkeltplanter.</p>
-        <form action={settFellesAuto}>
+        <form action={settFellesAuto} className="bryter-skjema">
           <input type="hidden" name="pa" value={pa ? "0" : "1"} />
-          <button type="submit" className="sekundar">
-            {pa ? "Slå av for alle planter" : "Slå på"}
+          <button type="submit" role="switch" aria-checked={pa} className="bryter">
+            <span className="bryter-tekst">Automatisk justering for alle planter</span>
+            <span className="bryter-spor" aria-hidden="true">
+              <span className="bryter-knott" />
+            </span>
           </button>
         </form>
       </div>
