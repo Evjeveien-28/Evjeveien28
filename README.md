@@ -1,39 +1,64 @@
-# Evjeveien 28
+# Tidsklemma
 
-Monorepo for hjemme-appene våre. pnpm + Turborepo + Next.js + Supabase, deployet på Vercel.
+Tidsklemma er hjemme-appen vår i Evjeveien 28: én app med flere deler, der hver del har sin egen side. pnpm + Turborepo + Next.js + Supabase, deployet på Vercel.
 
 ## Struktur
 
 ```
 apps/
-  middagsplanlegger/   Next.js-app (Vercel Root Directory: apps/middagsplanlegger)
+  tidsklemma/          Next.js-appen (Vercel Root Directory: apps/tidsklemma)
+    app/               Startside, innlogging, og én mappe per del
+    deler.ts           Listen over deler som vises på startsiden
+    proxy.ts           Fornyer innloggingen og sender utloggede til /logg-inn
 packages/
   ui/                  Delte React-komponenter (@hjem/ui)
-  db/                  Supabase-klienter for nettleser og server (@hjem/db)
+  db/                  Supabase-klienter for nettleser, server og proxy (@hjem/db)
   config/              Felles TypeScript-oppsett (@hjem/config)
 supabase/
-  migrations/          Databaseskjema. Felles tabeller i `public`, ett schema per app.
+  migrations/          Databaseskjema. Husstand i `public`, ett schema per del.
 ```
 
 ## Kom i gang
 
 ```bash
 pnpm install
-cp apps/middagsplanlegger/.env.example apps/middagsplanlegger/.env.local   # fyll inn Supabase-nøkler
+cp apps/tidsklemma/.env.example apps/tidsklemma/.env.local   # fyll inn Supabase-URL og publishable-nøkkel
 pnpm dev
 ```
 
-Middagsplanleggeren kjører på http://localhost:3001.
+Appen kjører på http://localhost:3000.
 
-## Ny app
+## Oppsett
 
-1. Kopier `apps/middagsplanlegger` til `apps/<navn>` og endre `name` og port i `package.json`.
-2. Lag et nytt schema i en ny migrasjon i `supabase/migrations/`.
-3. Opprett et nytt Vercel-prosjekt fra dette repoet med Root Directory `apps/<navn>`.
+**Supabase** (ett prosjekt, `hzyjshudlfciedqufuva`):
+
+1. `npx supabase link --project-ref hzyjshudlfciedqufuva` og `npx supabase db push`.
+2. **Authentication → URL Configuration**: Site URL = produksjonsadressen på Vercel. Redirect URLs: `http://localhost:3000/**`, `https://<produksjonsadresse>/**` og `https://*-<vercel-team>.vercel.app/**`.
+3. Legg inn brukerne under **Authentication → Users → Add user**. Appen lar bare eksisterende brukere logge inn.
+4. Legg inn husstanden i **SQL Editor**:
+   ```sql
+   with h as (
+     insert into public.households (name) values ('Evjeveien 28') returning id
+   )
+   insert into public.household_members (household_id, user_id)
+   select h.id, u.id from h, auth.users u
+   where u.email in ('...', '...');
+   ```
+
+**Vercel** (ett prosjekt): Root Directory `apps/tidsklemma`, og miljøvariablene `NEXT_PUBLIC_SUPABASE_URL` og `NEXT_PUBLIC_SUPABASE_ANON_KEY` for Production og Preview.
+
+## Ny del
+
+1. Lag `apps/tidsklemma/app/<del>/page.tsx`. Alle sider krever innlogging automatisk.
+2. Legg delen til i `apps/tidsklemma/deler.ts`, så vises den på startsiden.
+3. Lag en ny migrasjon i `supabase/migrations/` med delens eget schema, `grant usage on schema <del> to authenticated`, og RLS på alle tabeller.
+4. Kjør `npx supabase db push`, legg schemaet til under **Project Settings → Data API → Exposed schemas**, og legg det til i `gen:types` i `packages/db/package.json`.
+
+I koden når du delens tabeller med `supabase.schema("<del>").from("...")`.
 
 ## Regler
 
 - Repoet er **offentlig**. Aldri commit `.env`-filer, nøkler eller passord.
-- Bare `anon`/`publishable`-nøkkelen skal brukes i appene. `service_role` hører aldri hjemme i koden.
+- Bare `anon`/`publishable`-nøkkelen skal brukes i appen. `service_role` hører aldri hjemme i koden.
 - Alle tabeller skal ha RLS. Bruk `public.is_household_member(household_id)` i policyene.
-- Jobb i branches og merge via pull request.
+- Jobb i branches og merge via pull request. CI kjører typecheck og build på hver PR.

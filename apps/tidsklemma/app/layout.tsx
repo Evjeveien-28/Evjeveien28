@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from "next";
 
 export const metadata: Metadata = {
-  title: "Middagsplanlegger",
-  description: "Ukens middager for Evjeveien 28",
+  title: "Tidsklemma",
+  description: "Hjemme-appene for Evjeveien 28",
 };
 
 export const viewport: Viewport = {

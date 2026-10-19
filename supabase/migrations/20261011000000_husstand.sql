@@ -29,45 +29,13 @@ as $$
   );
 $$;
 
+revoke execute on function public.is_household_member(uuid) from public, anon;
+grant execute on function public.is_household_member(uuid) to authenticated;
+
 create policy "Medlemmer ser husstanden"
   on public.households for select
   using (public.is_household_member(id));
 
 create policy "Medlemmer ser hverandre"
   on public.household_members for select
-  using (public.is_household_member(household_id));
-
--- Middagsplanlegger: eget schema
-create schema middag;
-grant usage on schema middag to authenticated;
-
-create table middag.meals (
-  id uuid primary key default gen_random_uuid(),
-  household_id uuid not null references public.households (id) on delete cascade,
-  date date not null,
-  title text not null,
-  notes text,
-  created_by uuid references auth.users (id) default auth.uid(),
-  created_at timestamptz not null default now(),
-  unique (household_id, date)
-);
-
-alter table middag.meals enable row level security;
-grant select, insert, update, delete on middag.meals to authenticated;
-
-create policy "Medlemmer leser middager"
-  on middag.meals for select
-  using (public.is_household_member(household_id));
-
-create policy "Medlemmer legger til middager"
-  on middag.meals for insert
-  with check (public.is_household_member(household_id));
-
-create policy "Medlemmer endrer middager"
-  on middag.meals for update
-  using (public.is_household_member(household_id))
-  with check (public.is_household_member(household_id));
-
-create policy "Medlemmer sletter middager"
-  on middag.meals for delete
   using (public.is_household_member(household_id));
