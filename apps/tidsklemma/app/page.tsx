@@ -33,7 +33,8 @@ export default async function Hjem() {
         ))
       )}
 
-      <div style={{ display: "flex", gap: 16, alignItems: "center", marginTop: 24 }}>
+      <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap", marginTop: 24 }}>
+        <Link href="/husstand">Husstand</Link>
         <Link href="/innlogging">Innlogging og passkeys</Link>
         <form action={loggUt}>
           <button type="submit" style={{ padding: 12, fontSize: 16 }}>

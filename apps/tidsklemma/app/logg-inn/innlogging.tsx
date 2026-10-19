@@ -64,7 +64,7 @@ export function Innlogging({ epostFeil }: { epostFeil: boolean }) {
       <button type="submit" style={knapp}>
         Send innloggingslenke
       </button>
-      {epostFeil && <p style={{ color: "#b91c1c" }}>Det gikk ikke. Sjekk adressen og prøv igjen.</p>}
+      {epostFeil && <p style={{ color: "#b91c1c" }}>Det gikk ikke. Sjekk adressen, eller be noen i husstanden om å invitere deg.</p>}
     </form>
   );
 
