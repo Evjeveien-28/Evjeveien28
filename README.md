@@ -41,7 +41,7 @@ Endringer i databasen gjøres i nettleseren: lim inn hver fil i `supabase/migrat
 4. **Authentication → Hooks → Before User Created**: velg Postgres-funksjonen `public.hook_bare_inviterte`. Den stopper alle som ikke er invitert.
 5. **Authentication → Sign In / Providers**: slå på **Allow new users to sign up**. Gjør dette *etter* steg 4, ellers kan hvem som helst lage konto i mellomtiden.
 
-6. **Integrations → Data API → Settings**: legg til schemaene til delene (`planter`) under **Exposed schemas**, og slå på de nye tabellene (`public.household_people`, `planter.planter`, `planter.vanninger`, `planter.innstillinger`) under **Exposed tables**. Nye tabeller er ikke eksponert som standard. RLS bestemmer fortsatt hvem som ser hva.
+6. **Integrations → Data API → Settings**: legg til schemaene til delene (`planter`, `kalender`) under **Exposed schemas**, og slå på de nye tabellene (`public.household_people`, `planter.planter`, `planter.vanninger`, `planter.innstillinger`, `kalender.avtaler`, `kalender.deltakere`, `kalender.varsler`) og funksjonen `kalender.varsle` under **Exposed tables**. Nye tabeller er ikke eksponert som standard. RLS bestemmer fortsatt hvem som ser hva.
 
 **Pl@ntNet** (bildegjenkjenning av planter): lag en gratis konto på my.plantnet.org og legg API-nøkkelen inn i Vercel som `PLANTNET_API_KEY` (Production og Preview). Den brukes bare på serveren og skal ikke ha `NEXT_PUBLIC_` foran.
 
@@ -70,6 +70,7 @@ I koden når du delens tabeller med `supabase.schema("<del>").from("...")`.
 
 ## Deler
 
+- **Familiekalender** (`app/familiekalender`, schema `kalender`): avtaler for hele husstanden, med hvem som skal være med i hver sin farge. Personene, også de uten app, ligger i `public.household_people` og redigeres på Husstand-siden. Uke er standard, med en kort oppsummering øverst og en strek for nå. Månedsvisning går bare fremover. Nye, endrede og avlyste avtaler gir de andre et varsel i appen (`kalender.varsle`), som står til det er markert som sett. Endring av bare tittel eller sted varsler ikke.
 - **Planter** (`app/planter`, schema `planter`): husstandens planter og vanning. Plantelisten med norske navn og vanningsintervall ligger i `app/planter/katalog.ts`. «Ta bilde» sender bildet via `app/planter/gjenkjenn/route.ts` til Pl@ntNet, og treffet kobles til listen via art, slekt eller familie. Vinterintervallet brukes oktober–mars. Startsiden viser en rød prikk når noe trenger vann.
 
 ## Brukere
