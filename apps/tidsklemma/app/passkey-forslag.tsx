@@ -38,16 +38,16 @@ export function PasskeyForslag() {
 
   return (
     <Card title="Logg inn raskere neste gang">
-      <p style={{ marginTop: 0 }}>Vil du bruke Face ID, fingeravtrykk eller skjermlåsen på denne enheten i stedet for e-postlenke?</p>
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-        <button type="button" onClick={leggTil} disabled={venter} style={{ padding: 12, fontSize: 16 }}>
+      <p>Vil du bruke Face ID, fingeravtrykk eller skjermlåsen på denne enheten i stedet for e-postlenke?</p>
+      <div className="knapperad" style={{ marginTop: 10 }}>
+        <button type="button" className="primar" onClick={leggTil} disabled={venter} style={{ width: "auto", flex: 1 }}>
           {venter ? "Venter …" : "Ja, slå på"}
         </button>
-        <button type="button" onClick={nei} disabled={venter} style={{ padding: 12, fontSize: 16 }}>
+        <button type="button" className="sekundar" onClick={nei} disabled={venter}>
           Ikke nå
         </button>
       </div>
-      {feil && <p style={{ color: "#b91c1c", marginBottom: 0 }}>{feil}</p>}
+      {feil && <p className="feil">{feil}</p>}
     </Card>
   );
 }

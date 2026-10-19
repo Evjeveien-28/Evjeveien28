@@ -4,19 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@hjem/db/browser";
 import { loggInn } from "../actions";
+import { Ikon } from "../ikoner";
 import { enhetenStotterPasskey, erAvbrutt, hentValg, lagreValg } from "../passkey";
-
-const knapp = { padding: 12, fontSize: 16 } as const;
-const lenkeknapp = {
-  background: "none",
-  border: "none",
-  padding: "12px 0",
-  fontSize: 16,
-  color: "#555",
-  textDecoration: "underline",
-  cursor: "pointer",
-  textAlign: "left",
-} as const;
 
 /**
  * Har enheten en passkey, er Face ID/fingeravtrykk det eneste som vises, og e-post ligger bak en lenke.
@@ -52,33 +41,35 @@ export function Innlogging({ epostFeil }: { epostFeil: boolean }) {
   }
 
   const passkeyKnapp = (
-    <button type="button" onClick={passkey} disabled={venter} style={knapp}>
-      {venter ? "Venter …" : "Logg inn med Face ID / fingeravtrykk"}
+    <button type="button" className="primar" onClick={passkey} disabled={venter}>
+      <Ikon navn="faceid" storrelse={20} />
+      {venter ? "Venter …" : "Logg inn med Face ID"}
     </button>
   );
 
   const epostSkjema = (
-    <form action={loggInn} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      <label htmlFor="email">E-post</label>
-      <input id="email" name="email" type="email" required autoComplete="email" style={{ padding: 12, fontSize: 16 }} />
-      <button type="submit" style={knapp}>
+    <form action={loggInn}>
+      <label htmlFor="email" className="kt">
+        E-post
+      </label>
+      <input id="email" name="email" type="email" required autoComplete="email" className="felt" />
+      <button type="submit" className="primar">
         Send innloggingslenke
       </button>
-      {epostFeil && <p style={{ color: "#b91c1c" }}>Det gikk ikke. Sjekk adressen, eller be noen i husstanden om å invitere deg.</p>}
+      {epostFeil && <p className="feil">Det gikk ikke. Sjekk adressen, eller be noen i husstanden om å invitere deg.</p>}
     </form>
   );
 
-  const feilmelding = feil && <p style={{ color: "#b91c1c" }}>{feil}</p>;
+  const feilmelding = feil && <p className="feil">{feil}</p>;
 
   if (harPasskey) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <div className="bunnknapper">
+        {visEpost && <div style={{ marginBottom: 16 }}>{epostSkjema}</div>}
         {passkeyKnapp}
         {feilmelding}
-        {visEpost ? (
-          <div style={{ marginTop: 16 }}>{epostSkjema}</div>
-        ) : (
-          <button type="button" onClick={() => setVisEpost(true)} style={{ ...lenkeknapp, alignSelf: "flex-start" }}>
+        {!visEpost && (
+          <button type="button" className="lenke" onClick={() => setVisEpost(true)}>
             Logg inn med e-post i stedet
           </button>
         )}
@@ -87,10 +78,10 @@ export function Innlogging({ epostFeil }: { epostFeil: boolean }) {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+    <div className="bunnknapper">
       {epostSkjema}
       {stottet && (
-        <button type="button" onClick={passkey} disabled={venter} style={{ ...lenkeknapp, alignSelf: "flex-start" }}>
+        <button type="button" className="lenke" onClick={passkey} disabled={venter}>
           {venter ? "Venter …" : "Har du passkey? Logg inn med Face ID / fingeravtrykk"}
         </button>
       )}

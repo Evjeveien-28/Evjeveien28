@@ -1,0 +1,164 @@
+/* Tidsklemma – «Emaljeskilt». Farger fra huset i Evjeveien 28. */
+:root {
+  --krem: #fbf6ea; /* bakgrunn og tallene på skiltet */
+  --krem-mork: #f3ead6; /* kort */
+  --felt: #fffdf8; /* tekstfelt */
+  --avokado: #66723f; /* nummerskilt og fliser */
+  --lyseblaa: #a9c5db; /* aksent og fliser */
+  --brun: #734623; /* knapper, ramme og fliser */
+  --valnott: #4a2e1c; /* tekst */
+  --dempet: #7a5a44; /* sekundær tekst */
+  --feil: #9a3412;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--krem); }
+body {
+  margin: 0;
+  min-height: 100dvh;
+  color: var(--valnott);
+  background: var(--krem);
+  font-family: var(--font-barlow), system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.4;
+  padding: 14px;
+}
+a { color: inherit; }
+button, input { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--lyseblaa); outline-offset: 2px; }
+
+/* Rammen rundt hele appen */
+.ramme {
+  max-width: 480px;
+  min-height: calc(100dvh - 28px);
+  margin: 0 auto;
+  border: 2px solid var(--brun);
+  border-radius: 20px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Overskrifter i skilt-skrift */
+.skiltskrift, h1, h2 { font-family: var(--font-barlow-condensed), sans-serif; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+h1 { font-size: 52px; line-height: 1; margin: 34px 0 10px; text-align: center; }
+h2 { font-size: 44px; line-height: 1; margin: 14px 0 8px; }
+.strek { height: 6px; width: 70px; background: var(--lyseblaa); border-radius: 3px; margin: 0 auto; }
+.strek.venstre { margin: 0 0 18px; }
+.undertekst { text-align: center; color: var(--dempet); font-size: 16px; margin: 12px 0; }
+.kt { font-family: var(--font-barlow-condensed), sans-serif; font-weight: 600; font-size: 13px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dempet); margin: 4px 0 6px; }
+.dempet { color: var(--dempet); }
+.liten { font-size: 13px; }
+.feil { color: var(--feil); }
+
+/* Husnummerskiltet */
+.skilt {
+  background: var(--avokado);
+  color: var(--krem);
+  border-radius: 16px;
+  width: 180px;
+  margin: 30px auto 0;
+  padding: 14px 0 10px;
+  text-align: center;
+  box-shadow: inset 0 0 0 4px var(--avokado), inset 0 0 0 6px var(--krem);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-barlow-condensed), sans-serif;
+}
+.skilt .gate { font-weight: 600; font-size: 14px; letter-spacing: 0.3em; }
+.skilt .nr { font-weight: 700; font-size: 92px; line-height: 0.95; }
+.skilt.mini { width: auto; margin: 0; padding: 4px 12px; border-radius: 10px; box-shadow: inset 0 0 0 2px var(--avokado), inset 0 0 0 3.5px var(--krem); }
+.skilt.mini .nr { font-size: 30px; }
+
+.topp { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.topp .navn { font-family: var(--font-barlow-condensed), sans-serif; font-weight: 700; font-size: 26px; letter-spacing: 0.08em; }
+.hilsen { font-weight: 500; font-size: 22px; margin: 22px 0 14px; }
+.tilbake { font-family: var(--font-barlow-condensed), sans-serif; font-weight: 600; font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dempet); text-decoration: none; padding: 8px 0; }
+
+/* Knapper og lenker */
+.primar {
+  width: 100%;
+  background: var(--brun);
+  color: #fff;
+  border: 0;
+  border-radius: 10px;
+  padding: 17px;
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.primar:disabled, .sekundar:disabled { opacity: 0.6; cursor: default; }
+.sekundar {
+  background: var(--felt);
+  border: 1.5px solid var(--valnott);
+  border-radius: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+  min-height: 44px;
+}
+.lenke {
+  display: block;
+  width: 100%;
+  background: none;
+  border: 0;
+  padding: 12px 0;
+  text-align: center;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+.knapperad { display: flex; gap: 8px; flex-wrap: wrap; }
+.bunnknapper { margin-top: auto; padding-top: 24px; display: flex; flex-direction: column; gap: 4px; }
+
+/* Skjema */
+label { display: block; }
+.felt {
+  width: 100%;
+  border: 2px solid var(--brun);
+  background: var(--felt);
+  border-radius: 10px;
+  padding: 14px;
+  margin: 6px 0 12px;
+}
+.felt::placeholder { color: #9c8670; }
+
+/* Kort */
+.kort { background: var(--krem-mork); border: 2px solid var(--brun); border-radius: 14px; padding: 12px 16px; margin-bottom: 14px; }
+.kort.stiplet { border-style: dashed; }
+.kort p { margin: 6px 0; }
+.liste { list-style: none; margin: 0; padding: 0; }
+.liste li { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 6px 0; }
+.liste li > span:first-child { flex: 1 1 160px; overflow-wrap: anywhere; }
+.liste li.ventende { flex-direction: column; align-items: stretch; gap: 8px; }
+.liste li.ventende > span:first-child { flex: none; }
+.liste li.ventende + li.ventende { border-top: 1px dashed var(--brun); padding-top: 12px; }
+
+/* Flisene på startsiden */
+.rutenett { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.flis {
+  border-radius: 14px;
+  padding: 16px 14px;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 2px;
+  color: #fff;
+  text-decoration: none;
+  position: relative;
+}
+.flis .ikon { position: absolute; top: 14px; left: 14px; }
+.flis b { font-family: var(--font-barlow-condensed), sans-serif; font-weight: 700; font-size: 22px; letter-spacing: 0.06em; text-transform: uppercase; }
+.flis small { font-size: 14px; opacity: 0.92; }
+.flis-brun { background: var(--brun); }
+.flis-blaa { background: var(--lyseblaa); color: var(--valnott); }
+.flis-gronn { background: var(--avokado); }
+.flis-krem { background: var(--krem-mork); color: var(--valnott); border: 2px solid var(--brun); }
+
+.bunnmeny { margin-top: auto; padding-top: 24px; display: flex; justify-content: center; align-items: center; gap: 10px; color: var(--dempet); flex-wrap: wrap; }
+.bunnmeny a, .bunnmeny button { color: var(--valnott); text-decoration: underline; text-underline-offset: 4px; background: none; border: 0; padding: 10px 0; cursor: pointer; }

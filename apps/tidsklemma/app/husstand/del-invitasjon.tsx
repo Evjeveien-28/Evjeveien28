@@ -26,8 +26,8 @@ export function DelInvitasjon({ email }: { email: string }) {
   }
 
   return (
-    <button type="button" onClick={del} style={{ padding: 12, fontSize: 16 }}>
-      {kopiert ? "Kopiert!" : "Del invitasjon"}
+    <button type="button" className="sekundar" onClick={del}>
+      {kopiert ? "Kopiert!" : "Del"}
     </button>
   );
 }
