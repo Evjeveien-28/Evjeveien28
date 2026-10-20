@@ -38,6 +38,9 @@ export default async function Meg({ searchParams }: { searchParams: Promise<{ la
         <Link href="/husstand" className="meg-lenke">
           Husstand <span aria-hidden="true">›</span>
         </Link>
+        <Link href="/meg/varsler" className="meg-lenke">
+          Varsler <span aria-hidden="true">›</span>
+        </Link>
         <Link href="/innlogging" className="meg-lenke">
           Innlogging og passkeys <span aria-hidden="true">›</span>
         </Link>

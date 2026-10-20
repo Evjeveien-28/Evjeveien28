@@ -2,11 +2,11 @@ import type { NextRequest } from "next/server";
 import { updateSession } from "@hjem/db/proxy";
 
 export function proxy(request: NextRequest) {
-  return updateSession(request, { loginPath: "/logg-inn", publicPaths: ["/auth/"] });
+  return updateSession(request, { loginPath: "/logg-inn", publicPaths: ["/auth/", "/api/push/"] });
 }
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|icon.svg|manifest.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|icon.svg|manifest.webmanifest|sw.js|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };
