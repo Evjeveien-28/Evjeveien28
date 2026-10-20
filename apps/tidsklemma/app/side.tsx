@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Brukerknapp } from "./meg/brukerknapp";
-import { Topp } from "./skilt";
+import { Topp } from "./logo";
 
 /**
  * Felles side: «Tidsklemma» og profilikonet over rammen. Inne i rammen tilbake-lenke, tittel
