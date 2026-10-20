@@ -39,7 +39,8 @@ button, input { font: inherit; color: inherit; }
 }
 /* På mobil holder det med en strek øverst i stedet for hele rammen. */
 @media (max-width: 560px) {
-  .ramme { border: 0; border-top: 2px solid var(--brun); border-radius: 0; padding: 20px 4px; }
+  .ramme { border: 0; border-top: 2px solid var(--brun); border-radius: 0; padding: 8px 4px 20px; }
+  .ramme > .hilsen:first-child { margin-top: 10px; }
   .ramme.innlogging { border-top: 0; }
 }
 
