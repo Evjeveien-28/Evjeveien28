@@ -9,7 +9,7 @@ export default async function LoggInn({
   const { sendt, feil } = await searchParams;
 
   return (
-    <main className="ramme">
+    <main className="ramme innlogging">
       <Logo storrelse={150} className="logo stor" />
       <h1>Tidsklemma</h1>
       <div className="strek" />
