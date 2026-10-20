@@ -44,6 +44,8 @@ create policy "Egne innstillinger"
 create schema privat;
 revoke all on schema privat from public, anon, authenticated;
 create table privat.hemmeligheter (navn text primary key, verdi text not null);
+-- RLS uten regler: ingen kan lese den via API-et. Funksjonene under og jobben leser den som eier.
+alter table privat.hemmeligheter enable row level security;
 insert into privat.hemmeligheter values ('push', replace(gen_random_uuid()::text || gen_random_uuid()::text, '-', ''));
 
 create function privat.riktig_hemmelighet(hemmelig text)
