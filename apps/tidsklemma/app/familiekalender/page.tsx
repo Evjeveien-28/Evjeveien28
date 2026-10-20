@@ -8,7 +8,7 @@ import { AvtaleRad } from "./avtalerad";
 import { dager, erOver, forekomsterPaDag, hentAvtaler, hentVarsler, type Avtale, type Varsel } from "./data";
 import { Nytt } from "./nytt";
 import { oppsummering } from "./oppsummering";
-import { antallDagerIManed, dagTekst, erGyldigDato, iDag, leggTilDager, manedTekst, naa, nesteManed, relativDag, ukedagNr } from "./tid";
+import { dagTekst, erGyldigDato, iDag, leggTilDager, manedKort, naa, periodeTekst, relativDag, ukedagNr } from "./tid";
 
 const tilbake = { href: "/", navn: "Tilbake" };
 const nyKnapp = (dato?: string) => (
@@ -20,7 +20,7 @@ const nyKnapp = (dato?: string) => (
 export default async function Familiekalender({
   searchParams,
 }: {
-  searchParams: Promise<{ vis?: string; m?: string; dag?: string }>;
+  searchParams: Promise<{ vis?: string; fra?: string; dag?: string }>;
 }) {
   const sok = await searchParams;
   const supabase = await createClient();
@@ -35,10 +35,16 @@ export default async function Familiekalender({
 
   const idag = iDag();
   const klokka = naa();
-  const denneManed = idag.slice(0, 7);
-  const maned = sok.vis === "maaned" ? (/^\d{4}-\d{2}$/.test(sok.m ?? "") && sok.m! > denneManed ? sok.m! : denneManed) : null;
-  const fra = maned ? (maned === denneManed ? idag : `${maned}-01`) : idag;
-  const til = maned ? `${maned}-${antallDagerIManed(maned)}` : leggTilDager(idag, 6);
+  // Måned viser alltid fem uker fra og med en mandag, så man ser inn i neste måned mot slutten av denne.
+  const ukestart = leggTilDager(idag, -ukedagNr(idag));
+  const femUker =
+    sok.vis === "maaned"
+      ? sok.fra && erGyldigDato(sok.fra) && ukedagNr(sok.fra) === 0 && sok.fra > ukestart
+        ? sok.fra
+        : ukestart
+      : null;
+  const fra = idag;
+  const til = femUker ? leggTilDager(femUker, 34) : leggTilDager(idag, 6);
 
   let avtaler: Avtale[], personer: Person[], varsler: Varsel[];
   try {
@@ -62,35 +68,33 @@ export default async function Familiekalender({
 
   const valg = (
     <nav className="segment" aria-label="Visning">
-      <Link href="/familiekalender" aria-current={maned ? undefined : "page"}>
+      <Link href="/familiekalender" aria-current={femUker ? undefined : "page"}>
         Uke
       </Link>
-      <Link href="/familiekalender?vis=maaned" aria-current={maned ? "page" : undefined}>
+      <Link href="/familiekalender?vis=maaned" aria-current={femUker ? "page" : undefined}>
         Måned
       </Link>
     </nav>
   );
 
-  if (maned) {
-    const valgtDag = sok.dag && erGyldigDato(sok.dag) && sok.dag.startsWith(maned) && sok.dag >= idag ? sok.dag : maned === denneManed ? idag : null;
-    // Denne måneden starter på uken vi er i. Det som har vært, vises ikke.
-    const ukestart = leggTilDager(idag, -ukedagNr(idag));
-    const forste = maned === denneManed && ukestart > `${maned}-01` ? ukestart : `${maned}-01`;
-    const forsteUkedag = ukedagNr(forste);
-    const alleDager = dager(forste, antallDagerIManed(maned) - Number(forste.slice(8)) + 1);
+  if (femUker) {
+    const sluttdag = leggTilDager(femUker, 34);
+    const valgtDag = sok.dag && erGyldigDato(sok.dag) && sok.dag >= idag && sok.dag >= femUker && sok.dag <= sluttdag ? sok.dag : femUker === ukestart ? idag : null;
+    const alleDager = dager(femUker, 35);
+    const forrige = leggTilDager(femUker, -35) > ukestart ? leggTilDager(femUker, -35) : ukestart;
     return (
       <Side tittel="Familiekalender" tilbake={tilbake} handling={nyKnapp(valgtDag ?? undefined)}>
         {valg}
         <div className="maned-topp">
-          {maned > denneManed ? (
-            <Link href={`/familiekalender?vis=maaned&m=${nesteManed(maned, -1)}`} className="maned-pil" aria-label="Forrige måned">
+          {femUker > ukestart ? (
+            <Link href={`/familiekalender?vis=maaned&fra=${forrige}`} className="maned-pil" aria-label="Forrige fem uker">
               ‹
             </Link>
           ) : (
             <span className="maned-pil" aria-hidden="true" />
           )}
-          <h3>{manedTekst(maned)}</h3>
-          <Link href={`/familiekalender?vis=maaned&m=${nesteManed(maned)}`} className="maned-pil" aria-label="Neste måned">
+          <h3>{periodeTekst(femUker, sluttdag)}</h3>
+          <Link href={`/familiekalender?vis=maaned&fra=${leggTilDager(femUker, 35)}`} className="maned-pil" aria-label="Neste fem uker">
             ›
           </Link>
         </div>
@@ -100,34 +104,36 @@ export default async function Familiekalender({
               {d}
             </span>
           ))}
-          {alleDager.map((dato, i) => {
+          {alleDager.map((dato) => {
             const fs = dato >= idag ? forekomsterPaDag(avtaler, dato) : [];
-            const prikker = fs.flatMap((f) => {
-              const p = personer.filter((x) => f.avtale.personer.includes(x.id));
-              return p.length === personer.length && personer.length > 1 ? ["var(--valnott)"] : p.map((x) => x.farge);
-            });
-            const klasse = ["maned-dag", dato === idag && "idag", dato === valgtDag && "valgt", dato < idag && "forbi"].filter(Boolean).join(" ");
+            // Én prikk per person som skal noe denne dagen, også når alle skal.
+            const prikker = personer.filter((x) => fs.some((f) => f.avtale.personer.includes(x.id)));
+            // Annenhver måned får litt mørkere bakgrunn, så man ser hvor en ny måned begynner.
+            const annenManed = Number(dato.slice(5, 7)) % 2 === 0;
+            const klasse = ["maned-dag", annenManed && "annen", dato === idag && "idag", dato === valgtDag && "valgt", dato < idag && "forbi"]
+              .filter(Boolean)
+              .join(" ");
             const innhold = (
               <>
+                {dato.endsWith("-01") && <span className="maned-navn">{manedKort(dato)}</span>}
                 <span className="maned-nr">{Number(dato.slice(8))}</span>
                 <span className="maned-prikker">
-                  {[...new Set(prikker)].slice(0, 4).map((farge) => (
-                    <i key={farge} style={{ background: farge }} />
+                  {prikker.map((x) => (
+                    <i key={x.id} style={{ background: x.farge }} />
                   ))}
                 </span>
               </>
             );
-            const stil = i === 0 ? { gridColumnStart: forsteUkedag + 1 } : undefined;
             return dato < idag ? (
-              <span key={dato} className={klasse} style={stil}>
+              <span key={dato} className={klasse}>
                 {innhold}
               </span>
             ) : (
               <Link
                 key={dato}
-                href={`/familiekalender?vis=maaned&m=${maned}&dag=${dato}`}
+                href={`/familiekalender?vis=maaned&fra=${femUker}&dag=${dato}`}
                 className={klasse}
-                style={stil}
+               
                 aria-label={`${dagTekst(dato)}, ${fs.length} ${fs.length === 1 ? "avtale" : "avtaler"}`}
                 aria-current={dato === valgtDag ? "date" : undefined}
                 scroll={false}
@@ -215,7 +221,7 @@ export default async function Familiekalender({
       </ol>
 
       <nav className="bunnmeny" aria-label="Familiekalender">
-        <Link href="/familiekalender?vis=maaned">Se hele måneden</Link>
+        <Link href="/familiekalender?vis=maaned">Se de neste fem ukene</Link>
       </nav>
     </Side>
   );
