@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@hjem/db/server";
+import { kalenderStatus } from "./familiekalender/status";
 import { hentPlanter } from "./planter/data";
 import { deler } from "../deler";
 import { Ikon } from "./ikoner";
@@ -26,7 +27,11 @@ export default async function Hjem() {
   // Levende tekst og rød prikk på flisene som har noe å melde.
   const status: Record<string, { tekst: string; antall: number }> = {};
   if (husstand) {
-    const planter = await hentPlanter(supabase, husstand.id).catch(() => null);
+    const [planter, kalender] = await Promise.all([
+      hentPlanter(supabase, husstand.id).catch(() => null),
+      kalenderStatus(supabase, husstand.id).catch(() => null),
+    ]);
+    if (kalender) status.familiekalender = kalender;
     if (planter) {
       const antall = planter.filter((p) => p.trengerVann).length;
       status.planter = {
@@ -77,7 +82,7 @@ export default async function Hjem() {
                 <Ikon navn={del.ikon} storrelse={30} />
               </span>
               {status[del.slug]?.antall ? (
-                <span className="merke-rod" aria-label={`${status[del.slug]!.antall} trenger oppmerksomhet`}>
+                <span className="merke-rod" aria-label={`${status[del.slug]!.antall} nye`}>
                   {status[del.slug]!.antall}
                 </span>
               ) : null}

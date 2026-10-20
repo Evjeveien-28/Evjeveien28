@@ -32,7 +32,7 @@ export function Side({
         {tittel && (
           <>
             <div className="tittelrad">
-              <h2>{tittel}</h2>
+              <h2 className={typeof tittel === "string" && tittel.length > 12 ? "lang" : undefined}>{tittel}</h2>
               {handling}
             </div>
             <div className="strek venstre" />
