@@ -81,6 +81,7 @@ export default async function Familiekalender({
     const sluttdag = leggTilDager(femUker, 34);
     const valgtDag = sok.dag && erGyldigDato(sok.dag) && sok.dag >= idag && sok.dag >= femUker && sok.dag <= sluttdag ? sok.dag : femUker === ukestart ? idag : null;
     const alleDager = dager(femUker, 35);
+    const hovedmaned = (femUker > idag ? femUker : idag).slice(0, 7);
     const forrige = leggTilDager(femUker, -35) > ukestart ? leggTilDager(femUker, -35) : ukestart;
     return (
       <Side tittel="Familiekalender" tilbake={tilbake} handling={nyKnapp(valgtDag ?? undefined)}>
@@ -108,8 +109,8 @@ export default async function Familiekalender({
             const fs = dato >= idag ? forekomsterPaDag(avtaler, dato) : [];
             // Én prikk per person som skal noe denne dagen, også når alle skal.
             const prikker = personer.filter((x) => fs.some((f) => f.avtale.personer.includes(x.id)));
-            // Annenhver måned får litt mørkere bakgrunn, så man ser hvor en ny måned begynner.
-            const annenManed = Number(dato.slice(5, 7)) % 2 === 0;
+            // Måneden vi er i (eller den perioden starter i) er hvit, og neste måned beige.
+            const annenManed = dato.slice(0, 7) !== hovedmaned;
             const klasse = ["maned-dag", annenManed && "annen", dato === idag && "idag", dato === valgtDag && "valgt", dato < idag && "forbi"]
               .filter(Boolean)
               .join(" ");
