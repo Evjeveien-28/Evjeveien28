@@ -41,7 +41,7 @@ Endringer i databasen gjøres i nettleseren: lim inn hver fil i `supabase/migrat
 4. **Authentication → Hooks → Before User Created**: velg Postgres-funksjonen `public.hook_bare_inviterte`. Den stopper alle som ikke er invitert.
 5. **Authentication → Sign In / Providers**: slå på **Allow new users to sign up**. Gjør dette *etter* steg 4, ellers kan hvem som helst lage konto i mellomtiden.
 
-6. **Integrations → Data API → Settings**: legg til schemaene til delene (`planter`) under **Exposed schemas**, og slå på de nye tabellene (`planter.planter`, `planter.vanninger`, `planter.innstillinger`) under **Exposed tables**. Nye tabeller er ikke eksponert som standard. RLS bestemmer fortsatt hvem som ser hva.
+6. **Integrations → Data API → Settings**: legg til schemaene til delene (`planter`) under **Exposed schemas**, og slå på de nye tabellene (`public.household_people`, `planter.planter`, `planter.vanninger`, `planter.innstillinger`) under **Exposed tables**. Nye tabeller er ikke eksponert som standard. RLS bestemmer fortsatt hvem som ser hva.
 
 **Pl@ntNet** (bildegjenkjenning av planter): lag en gratis konto på my.plantnet.org og legg API-nøkkelen inn i Vercel som `PLANTNET_API_KEY` (Production og Preview). Den brukes bare på serveren og skal ikke ha `NEXT_PUBLIC_` foran.
 

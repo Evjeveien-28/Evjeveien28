@@ -267,3 +267,25 @@ fieldset.kort legend { padding: 0 4px; }
 .brukerknapp { width: 40px; height: 40px; border-radius: 50%; background: var(--krem-mork); color: var(--valnott); border: 1.5px solid #d9c9b0; display: grid; place-items: center; font-weight: 600; font-size: 16px; text-decoration: none; flex: none; }
 .meg-meny { display: flex; flex-direction: column; margin: 8px 0; }
 .meg-lenke { display: flex; justify-content: space-between; align-items: center; min-height: 52px; border-bottom: 1px solid #e6d9c2; text-decoration: none; font-size: 18px; }
+
+/* Personer i husstanden, med hver sin farge */
+.personliste { list-style: none; margin: 0; padding: 0; }
+.personliste li { border-bottom: 1px solid #e6d9c2; }
+.person-lenke { display: flex; gap: 12px; align-items: center; min-height: 56px; padding: 6px 0; text-decoration: none; }
+.person-lenke .pt b em { font-weight: 400; font-size: 15px; }
+.person-lenke .pil { color: var(--dempet); font-size: 22px; }
+.fargeprikk { width: 16px; height: 16px; border-radius: 50%; flex: none; box-shadow: inset 0 0 0 1.5px rgba(0, 0, 0, 0.12); }
+.fargeprikk.stor { width: 40px; height: 40px; }
+.legg-til-person { display: flex; gap: 12px; align-items: center; margin-top: 6px; }
+.legg-til-person .felt { flex: 1; margin: 6px 0; padding: 10px 12px; }
+.legg-til-person .inline-knapp { flex: none; }
+.fargevalg { border: 0; padding: 0; margin: 4px 0 12px; }
+.farger { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px 8px; margin: 8px 0; }
+.farge { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
+.farge input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.farge .fargeprikk { outline: 3px solid transparent; outline-offset: 3px; }
+.farge input:checked + .fargeprikk { outline-color: var(--valnott); }
+.farge input:focus-visible + .fargeprikk { outline-color: var(--lyseblaa); }
+.farge input:disabled + .fargeprikk { opacity: 0.25; }
+.farge:has(input:disabled) { cursor: default; }
+.farge-navn { font-size: 13px; color: var(--dempet); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

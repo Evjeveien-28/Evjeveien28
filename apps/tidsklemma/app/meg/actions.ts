@@ -13,6 +13,9 @@ export async function lagreFornavn(formData: FormData) {
   const supabase = await createClient();
   const { error } = await supabase.auth.updateUser({ data: { fornavn } });
   if (error) redirect(`${tilbake}?feil=fornavn`);
+  // Samme navn i husstanden, f.eks. i familiekalenderen.
+  const { data: meg } = await supabase.auth.getClaims();
+  if (meg) await supabase.from("household_people").update({ navn: fornavn }).eq("user_id", meg.claims.sub);
   // Ny innloggingsnøkkel med det nye navnet, så det vises med en gang.
   await supabase.auth.refreshSession();
 
