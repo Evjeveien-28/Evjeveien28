@@ -153,7 +153,7 @@ export default async function Familiekalender({
             {forekomsterPaDag(avtaler, valgtDag).length ? (
               <ul className="avtaler">
                 {forekomsterPaDag(avtaler, valgtDag).map((f) => (
-                  <AvtaleRad key={f.avtale.id} f={f} personer={personer} over={valgtDag === idag && erOver(f, klokka)} />
+                  <AvtaleRad key={`${f.avtale.id}-${f.avtale.start_dato}`} f={f} personer={personer} over={valgtDag === idag && erOver(f, klokka)} />
                 ))}
               </ul>
             ) : (
@@ -197,7 +197,7 @@ export default async function Familiekalender({
                   <summary>Tidligere i dag ({tidligere.length})</summary>
                   <ul className="avtaler">
                     {tidligere.map((f) => (
-                      <AvtaleRad key={f.avtale.id} f={f} personer={personer} over />
+                      <AvtaleRad key={`${f.avtale.id}-${f.avtale.start_dato}`} f={f} personer={personer} over />
                     ))}
                   </ul>
                 </details>
@@ -210,7 +210,7 @@ export default async function Familiekalender({
               {kommer.length > 0 ? (
                 <ul className="avtaler">
                   {kommer.map((f) => (
-                    <AvtaleRad key={f.avtale.id} f={f} personer={personer} />
+                    <AvtaleRad key={`${f.avtale.id}-${f.avtale.start_dato}`} f={f} personer={personer} />
                   ))}
                 </ul>
               ) : (

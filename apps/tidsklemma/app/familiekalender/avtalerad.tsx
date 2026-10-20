@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Person } from "../husstand/personer";
-import { hvemTekst, type Forekomst } from "./data";
+import { avtaleLenke, hvemTekst, type Forekomst } from "./data";
 
 /** Fargeprikker for de som skal være med, eller «Alle». */
 export function Hvem({ personer, alle }: { personer: string[]; alle: Person[] }) {
@@ -33,7 +33,7 @@ export function AvtaleRad({ f, personer, over }: { f: Forekomst; personer: Perso
   const tid = f.fra ?? (f.til ? `til ${f.til}` : "Hele dagen");
   return (
     <li>
-      <Link href={`/familiekalender/${a.id}`} className={over ? "avtale over" : "avtale"}>
+      <Link href={avtaleLenke(a)} className={over ? "avtale over" : "avtale"}>
         <span className={f.fra || f.til ? "atid" : "atid hel"}>
           {tid}
           {f.fra && f.til && <small>–{f.til}</small>}
@@ -45,7 +45,14 @@ export function AvtaleRad({ f, personer, over }: { f: Forekomst; personer: Perso
         </span>
         <span className="astripe" style={{ background: stripe(a.personer, personer) }} aria-hidden="true" />
         <span className="pt">
-          <b>{a.tittel}</b>
+          <b>
+            {a.tittel}
+            {a.gjentakelse !== "ingen" && (
+              <span className="gjentas" aria-label="gjentas">
+                {" "}↻
+              </span>
+            )}
+          </b>
           {a.sted && <small>{a.sted}</small>}
           <Hvem personer={a.personer} alle={personer} />
         </span>
