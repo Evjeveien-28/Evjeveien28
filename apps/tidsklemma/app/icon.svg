@@ -1,1 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#66723f"/><rect x="4" y="4" width="56" height="56" rx="11" fill="none" stroke="#fbf6ea" stroke-width="2.5"/><text x="32" y="45" text-anchor="middle" font-family="Barlow Condensed, Arial Narrow, sans-serif" font-weight="700" font-size="36" fill="#fbf6ea">28</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+  <!-- Huset i Evjeveien 28 med klokke i midtvinduet. iPhone runder hjørnene selv. -->
+  <rect width="180" height="180" fill="#a9c5db"/>
+  <rect y="150" width="180" height="30" fill="#66723f"/>
+  <g transform="translate(90 150) scale(1.14) translate(-90 -150)">
+    <rect x="104" y="30" width="11" height="20" fill="#8a3f2c"/>
+    <path d="M52 44H128L152 60H28Z" fill="#3d4247"/>
+    <rect x="38" y="60" width="104" height="90" fill="#d3b97c"/>
+    <rect x="46" y="70" width="20" height="23" fill="#734623"/>
+    <rect x="49" y="73" width="6" height="17" fill="#5b6b78"/><rect x="57" y="73" width="6" height="17" fill="#5b6b78"/>
+    <rect x="114" y="70" width="20" height="23" fill="#734623"/>
+    <rect x="117" y="73" width="6" height="17" fill="#5b6b78"/><rect x="125" y="73" width="6" height="17" fill="#5b6b78"/>
+    <circle cx="90" cy="82" r="14" fill="#fbf6ea" stroke="#4a2e1c" stroke-width="2.24"/>
+    <path d="M90 82V73.6M90 82l6.3 3.5" stroke="#4a2e1c" stroke-width="2.38" stroke-linecap="round" fill="none"/>
+    <circle cx="90" cy="82" r="1.82" fill="#b42318"/>
+    <path d="M74 106H106L118 116H62Z" fill="#3d4247"/>
+    <rect x="66" y="116" width="4" height="34" fill="#734623"/><rect x="110" y="116" width="4" height="34" fill="#734623"/>
+    <rect x="81" y="118" width="18" height="32" fill="#8a4b26"/>
+  </g>
+</svg>

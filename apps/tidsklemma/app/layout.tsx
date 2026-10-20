@@ -12,6 +12,8 @@ const barlowCondensed = Barlow_Condensed({
 export const metadata: Metadata = {
   title: "Tidsklemma",
   description: "Hjemme-appen for Evjeveien 28",
+  // Åpnes i fullskjerm uten Safari-menyer når appen er lagt på hjemskjermen.
+  appleWebApp: { capable: true, title: "Tidsklemma", statusBarStyle: "default" },
 };
 
 export const viewport: Viewport = {
