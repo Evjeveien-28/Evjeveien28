@@ -162,7 +162,7 @@ export default async function Familiekalender({
   }
 
   const uke = dager(idag, 7).map((dato) => ({ dato, forekomster: forekomsterPaDag(avtaler, dato) }));
-  const linjer = oppsummering(uke, klokka, personer);
+  const linjer = oppsummering(uke[0]!.forekomster, uke[1]!.forekomster, klokka, personer);
 
   return (
     <Side tittel="Familiekalender" tilbake={tilbake} handling={nyKnapp()}>
