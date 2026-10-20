@@ -4,7 +4,8 @@ export { dagerMellom, erGyldigDato, iDag, leggTilDager, naa } from "../dato";
 
 const dagFormat = new Intl.DateTimeFormat("nb-NO", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" });
 const ukedagFormat = new Intl.DateTimeFormat("nb-NO", { weekday: "long", timeZone: "UTC" });
-const manedFormat = new Intl.DateTimeFormat("nb-NO", { month: "long", year: "numeric", timeZone: "UTC" });
+const kortFormat = new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "short", timeZone: "UTC" });
+const manedKortFormat = new Intl.DateTimeFormat("nb-NO", { month: "short", timeZone: "UTC" });
 
 const somDato = (dato: string) => new Date(`${dato}T12:00:00Z`);
 
@@ -18,10 +19,14 @@ export function ukedag(dato: string): string {
   return ukedagFormat.format(somDato(dato));
 }
 
-/** «Oktober 2026» */
-export function manedTekst(maned: string): string {
-  const t = manedFormat.format(somDato(`${maned}-01`));
-  return t.charAt(0).toUpperCase() + t.slice(1);
+/** «19. okt. – 22. nov.» */
+export function periodeTekst(fra: string, til: string): string {
+  return `${kortFormat.format(somDato(fra))} – ${kortFormat.format(somDato(til))}`;
+}
+
+/** «nov.» */
+export function manedKort(dato: string): string {
+  return manedKortFormat.format(somDato(dato));
 }
 
 /** «I dag», «I morgen» eller «Tirsdag». */
@@ -41,15 +46,4 @@ export function kl(tid: string | null): string | null {
 /** Mandag = 0 … søndag = 6. */
 export function ukedagNr(dato: string): number {
   return (somDato(dato).getUTCDay() + 6) % 7;
-}
-
-export function antallDagerIManed(maned: string): number {
-  const [a, m] = maned.split("-").map(Number);
-  return new Date(Date.UTC(a!, m!, 0)).getUTCDate();
-}
-
-export function nesteManed(maned: string, n = 1): string {
-  const [a, m] = maned.split("-").map(Number);
-  const d = new Date(Date.UTC(a!, m! - 1 + n, 1));
-  return d.toISOString().slice(0, 7);
 }
