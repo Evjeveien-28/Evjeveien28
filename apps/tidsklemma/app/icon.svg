@@ -1,18 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
-  <!-- Huset i Evjeveien 28 med klokke på veggen. iPhone runder hjørnene selv. -->
+  <!-- Huset i Evjeveien 28 med klokke på veggen, i appens farger. iPhone runder hjørnene selv. -->
   <rect width="180" height="180" fill="#a9c5db"/>
   <rect y="150" width="180" height="30" fill="#66723f"/>
   <g transform="translate(90 150) scale(1.14) translate(-90 -150)">
-    <rect x="104" y="30" width="11" height="20" fill="#8a3f2c"/>
-    <path d="M52 44H128L152 60H28Z" fill="#3d4247"/>
-    <rect x="38" y="60" width="104" height="90" fill="#d3b97c"/>
+    <rect x="104" y="30" width="11" height="20" fill="#734623"/>
+    <path d="M52 44H128L152 60H28Z" fill="#4a2e1c"/>
+    <rect x="38" y="60" width="104" height="90" fill="#f3ead6"/>
     <rect x="46" y="70" width="20" height="23" fill="#734623"/>
-    <rect x="49" y="73" width="6" height="17" fill="#5b6b78"/><rect x="57" y="73" width="6" height="17" fill="#5b6b78"/>
-    <rect x="114" y="70" width="20" height="23" fill="#734623"/>
-    <rect x="117" y="73" width="6" height="17" fill="#5b6b78"/><rect x="125" y="73" width="6" height="17" fill="#5b6b78"/>
+    <rect x="49" y="73" width="6" height="17" fill="#a9c5db"/><rect x="57" y="73" width="6" height="17" fill="#a9c5db"/>
     <rect x="80" y="70" width="20" height="23" fill="#734623"/>
-    <rect x="83" y="73" width="6" height="17" fill="#5b6b78"/><rect x="91" y="73" width="6" height="17" fill="#5b6b78"/>
-    <circle cx="90" cy="122" r="17" fill="#fbf6ea" stroke="#4a2e1c" stroke-width="2.8"/>
+    <rect x="83" y="73" width="6" height="17" fill="#a9c5db"/><rect x="91" y="73" width="6" height="17" fill="#a9c5db"/>
+    <rect x="114" y="70" width="20" height="23" fill="#734623"/>
+    <rect x="117" y="73" width="6" height="17" fill="#a9c5db"/><rect x="125" y="73" width="6" height="17" fill="#a9c5db"/>
+    <circle cx="90" cy="122" r="17" fill="#fffdf8" stroke="#4a2e1c" stroke-width="2.8"/>
     <path d="M90 122V111.5M90 122l7.6 4.3" stroke="#4a2e1c" stroke-width="2.9" stroke-linecap="round" fill="none"/>
     <circle cx="90" cy="122" r="2.2" fill="#b42318"/>
   </g>
