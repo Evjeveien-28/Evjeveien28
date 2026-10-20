@@ -53,24 +53,9 @@ h2 { font-size: 44px; line-height: 1; margin: 14px 0 8px; }
 .liten { font-size: 13px; }
 .feil { color: var(--feil); }
 
-/* Husnummerskiltet */
-.skilt {
-  background: var(--avokado);
-  color: var(--krem);
-  border-radius: 16px;
-  width: 180px;
-  margin: 30px auto 0;
-  padding: 14px 0 10px;
-  text-align: center;
-  box-shadow: inset 0 0 0 4px var(--avokado), inset 0 0 0 6px var(--krem);
-  display: flex;
-  flex-direction: column;
-  font-family: var(--font-barlow-condensed), sans-serif;
-}
-.skilt .gate { font-weight: 600; font-size: 14px; letter-spacing: 0.3em; }
-.skilt .nr { font-weight: 700; font-size: 92px; line-height: 0.95; }
-.skilt.mini { width: auto; margin: 0; padding: 4px 12px; border-radius: 10px; box-shadow: inset 0 0 0 2px var(--avokado), inset 0 0 0 3.5px var(--krem); }
-.skilt.mini .nr { font-size: 30px; }
+/* Logoen: huset i Evjeveien, med samme runde hjørner som app-ikonet */
+.logo { display: block; border-radius: 22.5%; flex: none; }
+.logo.stor { margin: 30px auto 0; box-shadow: 0 3px 10px rgba(74, 46, 28, 0.18); }
 
 .topp { display: flex; align-items: center; gap: 12px; text-decoration: none; }
 .topp .navn { font-family: var(--font-barlow-condensed), sans-serif; font-weight: 700; font-size: 26px; letter-spacing: 0.08em; }

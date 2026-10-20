@@ -1,4 +1,4 @@
-import { Skilt } from "../skilt";
+import { Logo } from "../logo";
 import { Innlogging } from "./innlogging";
 
 export default async function LoggInn({
@@ -10,7 +10,7 @@ export default async function LoggInn({
 
   return (
     <main className="ramme">
-      <Skilt />
+      <Logo storrelse={150} className="logo stor" />
       <h1>Tidsklemma</h1>
       <div className="strek" />
       <p className="undertekst">Hjemme-appen</p>
