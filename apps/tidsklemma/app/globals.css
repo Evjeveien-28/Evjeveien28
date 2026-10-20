@@ -37,6 +37,11 @@ button, input { font: inherit; color: inherit; }
   display: flex;
   flex-direction: column;
 }
+/* På mobil holder det med en strek øverst i stedet for hele rammen. */
+@media (max-width: 560px) {
+  .ramme { border: 0; border-top: 2px solid var(--brun); border-radius: 0; padding: 20px 4px; }
+  .ramme.innlogging { border-top: 0; }
+}
 
 /* Topplinje: tilbake-pil, tittel, handling og profil */
 .sidetopp { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 2px 6px 12px; min-height: 56px; }
