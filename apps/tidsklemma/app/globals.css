@@ -353,3 +353,5 @@ fieldset.kort legend { padding: 0 4px; }
 .detaljer .hvem { font-size: 16px; gap: 4px 14px; }
 .detaljer .hvem .fargeprikk { width: 14px; height: 14px; }
 .atid.hel { font-size: 13px; line-height: 1.2; padding-top: 3px; }
+.gjentas { color: var(--dempet); font-weight: 400; font-size: 15px; }
+.omfang { display: flex; flex-direction: column; gap: 10px; text-align: left; }

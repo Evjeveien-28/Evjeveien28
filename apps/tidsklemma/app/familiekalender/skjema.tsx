@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { Person } from "../husstand/personer";
 import { lagre } from "./actions";
-import type { Avtale } from "./data";
+import { GJENTAKELSER, type Avtale, type Gjentakelse } from "./data";
 
 /** Skjema for ny avtale og for endring. Hvem som skal være med må velges, og «Alle» velger alle på én gang. */
 export function AvtaleSkjema({
@@ -28,6 +28,9 @@ export function AvtaleSkjema({
   const [sluttDato, setSluttDato] = useState(avtale?.slutt_dato ?? dato);
   const [heleDagen, setHeleDagen] = useState(!!avtale && !avtale.start_tid);
   const [fra, setFra] = useState(avtale?.start_tid?.slice(0, 5) ?? "");
+  const [gjentakelse, setGjentakelse] = useState<Gjentakelse>(avtale?.gjentakelse ?? "ingen");
+  const serie = !!avtale && avtale.gjentakelse !== "ingen";
+  const [omfang, setOmfang] = useState<"denne" | "fremover" | "alle">("denne");
 
   const alle = personer.length > 0 && personer.every((p) => valgte.includes(p.id));
   const veksle = (id: string) => setValgte((v) => (v.includes(id) ? v.filter((x) => x !== id) : [...v, id]));
@@ -36,6 +39,26 @@ export function AvtaleSkjema({
     <form action={lagre} className="avtaleskjema">
       <input type="hidden" name="husstand" value={husstand} />
       {avtale && <input type="hidden" name="avtale" value={avtale.id} />}
+      {serie && (
+        <fieldset className="gruppe">
+          <legend className="kt">Hva vil du endre</legend>
+          <div className="chips">
+            {(
+              [
+                ["denne", "Bare denne gangen"],
+                ["fremover", "Denne og senere"],
+                ["alle", "Alle gangene"],
+              ] as const
+            ).map(([verdi, navn]) => (
+              <button key={verdi} type="button" className="chip" aria-pressed={omfang === verdi} onClick={() => setOmfang(verdi)}>
+                {navn}
+              </button>
+            ))}
+          </div>
+          <input type="hidden" name="omfang" value={omfang} />
+          <input type="hidden" name="gang" value={avtale.start_dato} />
+        </fieldset>
+      )}
 
       <label htmlFor="tittel" className="kt">
         Hva
@@ -149,6 +172,29 @@ export function AvtaleSkjema({
                 className="felt"
               />
             </label>
+          </>
+        )}
+        {!(serie && omfang === "denne") && (
+          <>
+            <p className="dempet liten" style={{ margin: "8px 0 0" }}>
+              Gjentas
+            </p>
+            <div className="chips">
+              {GJENTAKELSER.map((g) => (
+                <button key={g.verdi} type="button" className="chip" aria-pressed={gjentakelse === g.verdi} onClick={() => setGjentakelse(g.verdi)}>
+                  {g.navn}
+                </button>
+              ))}
+            </div>
+            <input type="hidden" name="gjentakelse" value={gjentakelse} />
+            {gjentakelse !== "ingen" && (
+              <label>
+                <span className="dempet liten">
+                  Til og med <span className="valgfritt">(valgfritt)</span>
+                </span>
+                <input type="date" name="gjentas_til" min={dag} defaultValue={avtale?.gjentas_til ?? ""} className="felt" />
+              </label>
+            )}
           </>
         )}
       </fieldset>

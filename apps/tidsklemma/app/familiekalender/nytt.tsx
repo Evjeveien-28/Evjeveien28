@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Person } from "../husstand/personer";
 import { sett } from "./actions";
 import { Hvem } from "./avtalerad";
-import type { Varsel } from "./data";
+import { gjentakelseTekst, type Varsel } from "./data";
 import { dagTekst, kl, relativDag } from "./tid";
 
 const merke = { ny: "Ny", endret: "Endret", avlyst: "Avlyst" } as const;
@@ -28,7 +28,10 @@ export function Nytt({ varsler, personer, idag }: { varsler: Varsel[]; personer:
         {varsler.map((v) => {
           const a = v.avtale;
           const fra = personer.find((p) => p.user_id && p.user_id === v.laget_av)?.navn;
-          const nar = `${a.start_dato <= idag ? relativDag(a.start_dato, idag) : dagTekst(a.start_dato)}${a.start_tid ? ` kl. ${kl(a.start_tid)}` : ""}`;
+          const gjentas = gjentakelseTekst(a, dagTekst);
+          const nar = gjentas
+            ? `${gjentas.charAt(0).toUpperCase()}${gjentas.slice(1).toLowerCase()} fra ${dagTekst(a.start_dato)}${a.start_tid ? ` kl. ${kl(a.start_tid)}` : ""}`
+            : `${a.start_dato <= idag ? relativDag(a.start_dato, idag) : dagTekst(a.start_dato)}${a.start_tid ? ` kl. ${kl(a.start_tid)}` : ""}`;
           return (
             <li key={v.id} className="varsel">
               <span className="pt">

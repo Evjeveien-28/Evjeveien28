@@ -5,7 +5,7 @@ import { hentPersoner } from "../../husstand/personer";
 import { Side } from "../../side";
 import { avlys } from "../actions";
 import { Hvem } from "../avtalerad";
-import { AVTALEFELT, tilAvtale, type AvtaleRad } from "../data";
+import { AVTALEFELT, avtaleLenke, gangPa, gjentakelseTekst, tilAvtale, type AvtaleRad } from "../data";
 import { Feilmelding } from "../feil";
 import { dagTekst, iDag, kl, leggTilDager, relativDag } from "../tid";
 import { AvlysKnapp } from "./avlys-knapp";
@@ -15,14 +15,15 @@ export default async function AvtaleSide({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ feil?: string }>;
+  searchParams: Promise<{ feil?: string; dato?: string }>;
 }) {
-  const [{ id }, { feil }] = await Promise.all([params, searchParams]);
+  const [{ id }, { feil, dato }] = await Promise.all([params, searchParams]);
   if (!/^[0-9a-f-]{36}$/.test(id)) notFound();
   const supabase = await createClient();
   const { data } = await supabase.schema("kalender").from("avtaler").select(AVTALEFELT).eq("id", id).maybeSingle();
   if (!data) notFound();
-  const a = tilAvtale(data as AvtaleRad);
+  const a = gangPa(tilAvtale(data as AvtaleRad), dato);
+  const serie = a.gjentakelse !== "ingen";
   const personer = await hentPersoner(supabase, a.household_id);
   const laget = personer.find((p) => p.user_id && p.user_id === a.created_by)?.navn;
   const idag = iDag();
@@ -49,6 +50,12 @@ export default async function AvtaleSide({
             </>
           )}
         </dd>
+        {serie && (
+          <>
+            <dt className="kt">Gjentas</dt>
+            <dd>{gjentakelseTekst(a, dagTekst)}</dd>
+          </>
+        )}
         {a.sted && (
           <>
             <dt className="kt">Hvor</dt>
@@ -64,12 +71,13 @@ export default async function AvtaleSide({
 
       {!a.avlyst_at && (
         <>
-          <Link href={`/familiekalender/${a.id}/endre`} className="primar" style={{ marginTop: 16 }}>
+          <Link href={avtaleLenke(a, "/endre")} className="primar" style={{ marginTop: 16 }}>
             Endre
           </Link>
           <form action={avlys} className="bunnknapper">
             <input type="hidden" name="avtale" value={a.id} />
-            <AvlysKnapp tittel={a.tittel} />
+            <input type="hidden" name="dato" value={a.start_dato} />
+            <AvlysKnapp tittel={a.tittel} serie={serie} />
           </form>
         </>
       )}
