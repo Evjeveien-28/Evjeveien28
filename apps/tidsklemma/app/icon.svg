@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
-  <!-- Huset i Evjeveien 28. iPhone runder hjørnene selv. -->
+  <!-- Huset i Evjeveien 28 med klokke på veggen. iPhone runder hjørnene selv. -->
   <rect width="180" height="180" fill="#a9c5db"/>
   <rect y="150" width="180" height="30" fill="#66723f"/>
   <g transform="translate(90 150) scale(1.14) translate(-90 -150)">
@@ -12,8 +12,8 @@
     <rect x="117" y="73" width="6" height="17" fill="#5b6b78"/><rect x="125" y="73" width="6" height="17" fill="#5b6b78"/>
     <rect x="80" y="70" width="20" height="23" fill="#734623"/>
     <rect x="83" y="73" width="6" height="17" fill="#5b6b78"/><rect x="91" y="73" width="6" height="17" fill="#5b6b78"/>
-    <path d="M74 106H106L118 116H62Z" fill="#3d4247"/>
-    <rect x="66" y="116" width="4" height="34" fill="#b39858"/><rect x="110" y="116" width="4" height="34" fill="#b39858"/>
-    <rect x="81" y="118" width="18" height="32" fill="#8a4b26"/>
+    <circle cx="90" cy="122" r="17" fill="#fbf6ea" stroke="#4a2e1c" stroke-width="2.8"/>
+    <path d="M90 122V111.5M90 122l7.6 4.3" stroke="#4a2e1c" stroke-width="2.9" stroke-linecap="round" fill="none"/>
+    <circle cx="90" cy="122" r="2.2" fill="#b42318"/>
   </g>
 </svg>
