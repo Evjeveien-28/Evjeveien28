@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Side } from "../../side";
 import { createClient } from "@hjem/db/server";
 import { settFellesAuto } from "../actions";
@@ -39,7 +40,13 @@ export default async function Innstillinger() {
       <div className="kort">
         <p className="kt">Varsler</p>
         <p>Rød prikk på Planter-flisen når noe trenger vann.</p>
-        <p className="dempet liten">Varsel på telefonen med eget klokkeslett kommer senere.</p>
+        <p>
+          Varsel på telefonen, på et klokkeslett du velger, slår du på under{" "}
+          <Link href="/meg/varsler" className="inline-knapp">
+            Meg → Varsler
+          </Link>
+          .
+        </p>
       </div>
     </Side>
   );

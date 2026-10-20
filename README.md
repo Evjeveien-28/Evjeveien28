@@ -45,6 +45,8 @@ Endringer i databasen gjøres i nettleseren: lim inn hver fil i `supabase/migrat
 
 **Pl@ntNet** (bildegjenkjenning av planter): lag en gratis konto på my.plantnet.org og legg API-nøkkelen inn i Vercel som `PLANTNET_API_KEY` (Production og Preview). Den brukes bare på serveren og skal ikke ha `NEXT_PUBLIC_` foran.
 
+**Push-varsler**: lag et nøkkelpar (VAPID) og legg det inn i Vercel (Production og Preview): `NEXT_PUBLIC_VAPID_PUBLIC_KEY` (offentlig) og `VAPID_PRIVATE_KEY` (hemmelig, bare på serveren). Slå på utvidelsene `pg_cron` og `pg_net` under Database → Extensions før `20261024000000_push.sql` kjøres. Migrasjonen lager en jobb som kaller `/api/push/planter` hvert kvarter, med en hemmelighet som bare ligger i databasen (`privat.hemmeligheter`). Slå på `push_abonnement`, `push_innstillinger` og funksjonene `fjern_push_abonnement`, `push_planter_grunnlag` og `kalender.push_mottakere` under Exposed tables. På iPhone virker push bare når appen er lagt på hjemskjermen. Hver person slår det på under Meg → Varsler.
+
 Nye medlemmer inviteres fra **Husstand** i appen. Den inviterte logger inn med e-posten sin på https://tidsklemma.vercel.app og blir meldt inn automatisk.
 
 Den aller første husstanden og brukeren ble laget manuelt (**Authentication → Users → Add user**, deretter i SQL Editor):

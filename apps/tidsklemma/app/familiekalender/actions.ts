@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@hjem/db/server";
 import { hentPersoner } from "../husstand/personer";
 import { AVTALEFELT, GJENTAKELSER, avtaleLenke, gangPa, gjentakelseTekst, tilAvtale, type Avtale, type AvtaleRad, type Gjentakelse } from "./data";
+import { varsle } from "./push";
 import { dagTekst, dagerMellom, erGyldigDato, kl, leggTilDager } from "./tid";
 
 type Klient = Awaited<ReturnType<typeof createClient>>;
@@ -106,7 +107,9 @@ export async function lagre(formData: FormData) {
   if (!id) {
     const nyId = await nyAvtale(supabase, husstand, verdier, personer);
     if (!nyId) redirect(`${tilbake}feil=lagre`);
-    await db.rpc("varsle", { aid: nyId, hva: "ny" });
+    const ny = { ...verdier, slutt_dato: sluttDato };
+    const gjentas = gjentakelseTekst(ny, dagTekst);
+    await varsle(supabase, nyId, "ny", null, { tittel, nar: gjentas ? `${gjentas.toLowerCase()} fra ${nar(ny)}` : nar(ny), url: `/familiekalender/${nyId}` });
     revalidatePath("/", "layout");
     redirect("/familiekalender");
   }
@@ -125,7 +128,8 @@ export async function lagre(formData: FormData) {
     if (!nyId) redirect(`${tilbake}feil=lagre`);
     await db.from("unntak").insert({ avtale_id: serie.id, dato: gammel.start_dato });
     const endring = beskrivEndring({ ...gammel, gjentakelse: "ingen", gjentas_til: null }, { ...gammel, ...egen, personer }, navn);
-    if (endring) await db.rpc("varsle", { aid: nyId, hva: "endret", beskrivelse: `${endring} (bare denne gangen)` });
+    if (endring)
+      await varsle(supabase, nyId, "endret", `${endring} (bare denne gangen)`, { tittel, nar: `${endring} (bare denne gangen)`, url: `/familiekalender/${nyId}` });
     revalidatePath("/", "layout");
     redirect(`/familiekalender/${nyId}`);
   }
@@ -136,7 +140,8 @@ export async function lagre(formData: FormData) {
     if (!nyId) redirect(`${tilbake}feil=lagre`);
     await db.from("avtaler").update({ gjentas_til: leggTilDager(gammel.start_dato, -1), updated_at: new Date().toISOString() }).eq("id", serie.id);
     const endring = beskrivEndring(gammel, { ...gammel, ...verdier, personer }, navn);
-    if (endring) await db.rpc("varsle", { aid: nyId, hva: "endret", beskrivelse: `${endring} (fra og med ${dagTekst(gammel.start_dato)})` });
+    const fraOgMed = `${endring} (fra og med ${dagTekst(gammel.start_dato)})`;
+    if (endring) await varsle(supabase, nyId, "endret", fraOgMed, { tittel, nar: fraOgMed, url: `/familiekalender/${nyId}` });
     revalidatePath("/", "layout");
     redirect(`/familiekalender/${nyId}${gjentakelse === "ingen" ? "" : `?dato=${startDato}`}`);
   }
@@ -158,7 +163,7 @@ export async function lagre(formData: FormData) {
   if (!(await oppdaterDeltakere(supabase, id, serie.personer, personer))) redirect(`${tilbake}feil=lagre`);
 
   const endring = beskrivEndring(gammel, { ...gammel, ...verdier, personer }, navn);
-  if (endring) await db.rpc("varsle", { aid: id, hva: "endret", beskrivelse: endring });
+  if (endring) await varsle(supabase, id, "endret", endring, { tittel, nar: endring, url: `/familiekalender/${id}` });
 
   revalidatePath("/", "layout");
   redirect(avtaleLenke({ ...serie, ...alle, start_dato: startDato }));
@@ -180,18 +185,21 @@ export async function avlys(formData: FormData) {
   if (serie.gjentakelse !== "ingen" && omfang === "denne") {
     const { error } = await db.from("unntak").insert({ avtale_id: id, dato: denne.start_dato });
     if (error) redirect(feil);
-    await db.rpc("varsle", { aid: id, hva: "avlyst", beskrivelse: `${nar(denne)} (bare denne gangen)` });
+    const tekst = `${nar(denne)} (bare denne gangen)`;
+    await varsle(supabase, id, "avlyst", tekst, { tittel: serie.tittel, nar: tekst, url: "/familiekalender" });
   } else if (serie.gjentakelse !== "ingen" && omfang === "fremover" && denne.start_dato > serie.serie_start) {
     const { error } = await db
       .from("avtaler")
       .update({ gjentas_til: leggTilDager(denne.start_dato, -1), updated_at: new Date().toISOString() })
       .eq("id", id);
     if (error) redirect(feil);
-    await db.rpc("varsle", { aid: id, hva: "avlyst", beskrivelse: `Fra og med ${dagTekst(denne.start_dato)}` });
+    const tekst = `fra og med ${dagTekst(denne.start_dato)}`;
+    await varsle(supabase, id, "avlyst", `Fra og med ${dagTekst(denne.start_dato)}`, { tittel: serie.tittel, nar: tekst, url: "/familiekalender" });
   } else {
     const { error } = await db.from("avtaler").update({ avlyst_at: new Date().toISOString() }).eq("id", id);
     if (error) redirect(feil);
-    await db.rpc("varsle", { aid: id, hva: "avlyst", beskrivelse: serie.gjentakelse === "ingen" ? nar(denne) : `Alle gangene (${gjentakelseTekst(serie, dagTekst)?.toLowerCase()})` });
+    const tekst = serie.gjentakelse === "ingen" ? nar(denne) : `Alle gangene (${gjentakelseTekst(serie, dagTekst)?.toLowerCase()})`;
+    await varsle(supabase, id, "avlyst", tekst, { tittel: serie.tittel, nar: tekst.charAt(0).toLowerCase() + tekst.slice(1), url: "/familiekalender" });
   }
 
   revalidatePath("/", "layout");
