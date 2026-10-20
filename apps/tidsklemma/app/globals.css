@@ -146,10 +146,11 @@ label { display: block; }
 .liste li.ventende + li.ventende { border-top: 1px dashed var(--brun); padding-top: 12px; }
 
 /* Flisene på startsiden */
-.rutenett { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.rutenett { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .flis {
   border-radius: 14px;
   padding: 16px 14px;
+  aspect-ratio: 1;
   min-height: 150px;
   display: flex;
   flex-direction: column;
@@ -160,7 +161,7 @@ label { display: block; }
   position: relative;
 }
 .flis .ikon { position: absolute; top: 14px; left: 14px; }
-.flis b { font-family: var(--font-barlow-condensed), sans-serif; font-weight: 700; font-size: 22px; letter-spacing: 0.06em; text-transform: uppercase; }
+.flis b { white-space: pre-line; overflow-wrap: break-word; line-height: 1.1; font-family: var(--font-barlow-condensed), sans-serif; font-weight: 700; font-size: 22px; letter-spacing: 0.06em; text-transform: uppercase; }
 .flis small { font-size: 14px; opacity: 0.92; }
 .flis-brun { background: var(--brun); }
 .flis-blaa { background: var(--lyseblaa); color: var(--valnott); }
@@ -209,7 +210,11 @@ label { display: block; }
 .ft { display: flex; flex-direction: column; }
 .ft small { font-style: italic; color: var(--dempet); font-size: 13px; }
 .valgfritt { text-transform: none; letter-spacing: 0; font-family: var(--font-barlow), sans-serif; font-weight: 400; }
-.to-felt { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.to-felt { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.to-felt .felt { min-width: 0; }
+/* iPhone gir dato- og tidsfelt egen bredde og høyde. Disse får dem til å oppføre seg som de andre feltene. */
+input[type="date"].felt, input[type="time"].felt { -webkit-appearance: none; appearance: none; min-height: 54px; display: block; text-align: left; }
+input[type="date"].felt::-webkit-date-and-time-value, input[type="time"].felt::-webkit-date-and-time-value { text-align: left; margin: 0; }
 .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: 28px; width: min(436px, calc(100vw - 44px)); background: var(--valnott); color: var(--krem); border-radius: 12px; padding: 8px 8px 8px 16px; display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 15px; box-shadow: 0 6px 20px rgba(74, 46, 28, 0.3); }
 .toast button { background: none; border: 0; color: var(--lyseblaa); font-weight: 700; font-size: 16px; text-decoration: underline; text-underline-offset: 3px; min-height: 44px; padding: 0 10px; cursor: pointer; }
 
@@ -305,7 +310,7 @@ fieldset.kort legend { padding: 0 4px; }
 .dag-topp b { font-family: var(--font-barlow-condensed), sans-serif; font-weight: 700; font-size: 20px; letter-spacing: 0.06em; text-transform: uppercase; }
 .dag-topp span { color: var(--dempet); font-size: 14px; }
 .dag.idag .dag-topp b { color: #b42318; }
-.ingenting { color: #9c8670; margin: 2px 0 2px 62px; font-size: 15px; }
+.ingenting { color: #9c8670; margin: 4px 0; font-size: 15px; text-align: center; }
 
 .avtaler { list-style: none; margin: 0; padding: 0; }
 .avtale { display: flex; gap: 10px; align-items: stretch; padding: 7px 0; text-decoration: none; min-height: 48px; }
