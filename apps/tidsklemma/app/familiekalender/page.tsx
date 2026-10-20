@@ -195,7 +195,7 @@ export default async function Familiekalender({
                   </ul>
                 </details>
               )}
-              {erIdag && (
+              {erIdag && kommer.length > 0 && (
                 <div className="naa" role="img" aria-label={`Nå, klokka ${klokka}`}>
                   <span>{klokka}</span>
                 </div>
