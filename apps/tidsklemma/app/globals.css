@@ -297,10 +297,12 @@ fieldset.kort legend { padding: 0 4px; }
 .uke { list-style: none; margin: 0; padding: 0; }
 .dag { padding: 10px 0 8px; border-top: 1px solid #e6d9c2; }
 .uke .dag:first-child { border-top: 0; }
-.dag-topp { display: flex; align-items: baseline; gap: 8px; margin: 0 0 4px; }
+.dag-topp { display: flex; align-items: center; gap: 8px; margin: 0 0 4px; min-height: 40px; text-decoration: none; }
 .dag-topp b { font-family: var(--font-barlow-condensed), sans-serif; font-weight: 700; font-size: 20px; letter-spacing: 0.06em; text-transform: uppercase; }
 .dag-topp span { color: var(--dempet); font-size: 14px; }
 .dag.idag .dag-topp b { color: #b42318; }
+.dag-topp .dag-ny { margin-left: auto; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; border: 1.5px solid #d9c9b0; color: var(--brun); font-size: 20px; font-weight: 600; line-height: 1; }
+.dag-topp:active .dag-ny { background: var(--krem-mork); }
 .ingenting { color: #9c8670; margin: 4px 0; font-size: 15px; text-align: center; }
 
 .avtaler { list-style: none; margin: 0; padding: 0; }
@@ -333,7 +335,8 @@ fieldset.kort legend { padding: 0 4px; }
 .maned-topp { display: flex; justify-content: space-between; align-items: center; margin: 0 0 6px; }
 .maned-topp h3 { margin: 0; font-family: var(--font-barlow-condensed), sans-serif; font-size: 22px; letter-spacing: 0.06em; text-transform: uppercase; }
 .maned-pil { width: 44px; height: 44px; display: grid; place-items: center; font-size: 28px; text-decoration: none; }
-.maned { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; margin-bottom: 16px; }
+.maned-hint { text-align: center; margin: -8px 0 14px; }
+.maned { touch-action: manipulation; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; margin-bottom: 16px; }
 .maned-ukedag { text-align: center; font-size: 12px; font-weight: 600; color: var(--dempet); padding: 2px 0; }
 .maned-dag { aspect-ratio: 1 / 1.1; border-radius: 8px; background: var(--felt); border: 1px solid #e6d9c2; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 5px; text-decoration: none; font-variant-numeric: tabular-nums; }
 .maned-dag.annen { background: var(--krem-mork); }
