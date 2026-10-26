@@ -2,7 +2,8 @@ import type { NextRequest } from "next/server";
 import { updateSession } from "@hjem/db/proxy";
 
 export function proxy(request: NextRequest) {
-  return updateSession(request, { loginPath: "/logg-inn", publicPaths: ["/auth/", "/api/push/"] });
+  // Rutene under /api/ kalles av jobber i Supabase, og sjekker hemmeligheten selv.
+  return updateSession(request, { loginPath: "/logg-inn", publicPaths: ["/auth/", "/api/"] });
 }
 
 export const config = {

@@ -31,8 +31,8 @@ function Bryter({ felt, pa, tekst, under }: { felt: string; pa: boolean; tekst: 
 
 export default async function Varsler() {
   const supabase = await createClient();
-  const { data } = await supabase.from("push_innstillinger").select("kalender, planter, planter_tid").maybeSingle();
-  const inn = { kalender: data?.kalender ?? true, planter: data?.planter ?? false, tid: (data?.planter_tid ?? "08:00").slice(0, 5) };
+  const { data } = await supabase.from("push_innstillinger").select("kalender, planter, planter_tid, prisvakt").maybeSingle();
+  const inn = { kalender: data?.kalender ?? true, planter: data?.planter ?? false, tid: (data?.planter_tid ?? "08:00").slice(0, 5), prisvakt: data?.prisvakt ?? true };
 
   return (
     <Side tittel="Varsler" tilbake={{ href: "/meg", navn: "Meg" }}>
@@ -51,6 +51,7 @@ export default async function Varsler() {
       <div className="kort">
         <p className="kt">Varsle meg om</p>
         <Bryter felt="kalender" pa={inn.kalender} tekst="Familiekalender" under="Når noen legger inn, endrer eller avlyser en avtale" />
+        <Bryter felt="prisvakt" pa={inn.prisvakt} tekst="Prisvakt" under="Når en vare dere følger blir billigere" />
         <Bryter felt="planter" pa={inn.planter} tekst="Planter" under="Én gang om dagen, hvis noe trenger vann" />
         {inn.planter && (
           <form action={lagreInnstilling} className="tid-rad">

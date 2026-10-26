@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@hjem/db/server";
 import { kalenderStatus } from "./familiekalender/status";
 import { hentPlanter } from "./planter/data";
+import { hentVarer, underOnsket } from "./prisvakt/data";
 import { deler } from "../deler";
 import { Ikon } from "./ikoner";
 import { lagreFornavn } from "./meg/actions";
@@ -32,6 +33,16 @@ export default async function Hjem() {
       kalenderStatus(supabase, husstand.id).catch(() => null),
     ]);
     if (kalender) status.familiekalender = kalender;
+    const varer = await hentVarer(supabase, husstand.id).catch(() => null);
+    if (varer) {
+      const under = varer.filter(underOnsket).length;
+      const billigere = varer.filter((v) => v.pris < v.startpris).length;
+      status.prisvakt = {
+        antall: under,
+        tekst:
+          varer.length === 0 ? "Følg priser" : under ? `${under} under ønsket pris` : billigere ? `${billigere} billigere` : `Følger ${varer.length} ${varer.length === 1 ? "vare" : "varer"}`,
+      };
+    }
     if (planter) {
       const antall = planter.filter((p) => p.trengerVann).length;
       status.planter = {
@@ -82,7 +93,7 @@ export default async function Hjem() {
                 <Ikon navn={del.ikon} storrelse={30} />
               </span>
               {status[del.slug]?.antall ? (
-                <span className="merke-rod" aria-label={`${status[del.slug]!.antall} nye`}>
+                <span className="merke-rod" aria-label={`${status[del.slug]!.antall} å se på`}>
                   {status[del.slug]!.antall}
                 </span>
               ) : null}
