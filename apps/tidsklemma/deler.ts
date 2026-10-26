@@ -12,4 +12,5 @@ export const deler: {
 }[] = [
   { slug: "familiekalender", navn: "Familie\nkalender", beskrivelse: "Hvem skal hvor", ikon: "kalender", farge: "blaa" },
   { slug: "planter", navn: "Planter", beskrivelse: "Vanning", ikon: "plante", farge: "gronn" },
+  { slug: "prisvakt", navn: "Prisvakt", beskrivelse: "Følg priser", ikon: "pris", farge: "brun" },
 ];

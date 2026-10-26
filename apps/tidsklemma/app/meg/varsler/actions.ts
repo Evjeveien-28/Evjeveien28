@@ -39,7 +39,7 @@ export async function lagreInnstilling(formData: FormData) {
   const { data: meg } = await supabase.auth.getClaims();
   if (!meg) redirect("/logg-inn");
   let endring: Record<string, unknown>;
-  if (felt === "kalender" || felt === "planter") endring = { [felt]: formData.get("pa") === "1" };
+  if (felt === "kalender" || felt === "planter" || felt === "prisvakt") endring = { [felt]: formData.get("pa") === "1" };
   else if (felt === "planter_tid" && /^([01]\d|2[0-3]):[0-5]\d$/.test(String(formData.get("tid")))) endring = { planter_tid: `${formData.get("tid")}:00` };
   else redirect("/meg/varsler");
   await supabase.from("push_innstillinger").upsert({ user_id: meg.claims.sub, ...endring }, { onConflict: "user_id" });
