@@ -11,6 +11,18 @@ import { oppsummering } from "./oppsummering";
 import { dagTekst, erGyldigDato, iDag, leggTilDager, manedKort, naa, periodeTekst, relativDag, ukedagNr } from "./tid";
 
 const tilbake = { href: "/", navn: "Tilbake" };
+
+/** Overskriften for en dag. Trykk på den for å legge inn en avtale den dagen. */
+function DagTopp({ dato, idag }: { dato: string; idag: string }) {
+  return (
+    <Link href={`/familiekalender/ny?dato=${dato}`} className="dag-topp" aria-label={`Ny avtale ${dagTekst(dato)}`}>
+      <b>{relativDag(dato, idag)}</b> <span>{dagTekst(dato)}</span>
+      <span className="dag-ny" aria-hidden="true">
+        +
+      </span>
+    </Link>
+  );
+}
 const nyKnapp = (dato?: string) => (
   <Link href={dato ? `/familiekalender/ny?dato=${dato}` : "/familiekalender/ny"} className="pluss" aria-label="Ny avtale">
     +
@@ -132,10 +144,14 @@ export default async function Familiekalender({
             ) : (
               <Link
                 key={dato}
-                href={`/familiekalender?vis=maaned&fra=${femUker}&dag=${dato}`}
+                // Trykk på en valgt dag en gang til for å legge inn en avtale den dagen.
+                href={dato === valgtDag ? `/familiekalender/ny?dato=${dato}` : `/familiekalender?vis=maaned&fra=${femUker}&dag=${dato}`}
                 className={klasse}
-               
-                aria-label={`${dagTekst(dato)}, ${fs.length} ${fs.length === 1 ? "avtale" : "avtaler"}`}
+                aria-label={
+                  dato === valgtDag
+                    ? `Ny avtale ${dagTekst(dato)}`
+                    : `${dagTekst(dato)}, ${fs.length} ${fs.length === 1 ? "avtale" : "avtaler"}`
+                }
                 aria-current={dato === valgtDag ? "date" : undefined}
                 scroll={false}
               >
@@ -145,11 +161,11 @@ export default async function Familiekalender({
           })}
         </div>
 
+        <p className="dempet liten maned-hint">Trykk på en dag for å se den, og en gang til for å legge inn en avtale.</p>
+
         {valgtDag && (
           <section className="dag">
-            <p className="dag-topp">
-              <b>{relativDag(valgtDag, idag)}</b> <span>{dagTekst(valgtDag)}</span>
-            </p>
+            <DagTopp dato={valgtDag} idag={idag} />
             {forekomsterPaDag(avtaler, valgtDag).length ? (
               <ul className="avtaler">
                 {forekomsterPaDag(avtaler, valgtDag).map((f) => (
@@ -189,9 +205,7 @@ export default async function Familiekalender({
           const kommer = erIdag ? forekomster.filter((f) => !erOver(f, klokka)) : forekomster;
           return (
             <li key={dato} className={erIdag ? "dag idag" : "dag"}>
-              <p className="dag-topp">
-                <b>{relativDag(dato, idag)}</b> <span>{dagTekst(dato)}</span>
-              </p>
+              <DagTopp dato={dato} idag={idag} />
               {tidligere.length > 0 && (
                 <details className="tidligere">
                   <summary>Tidligere i dag ({tidligere.length})</summary>
